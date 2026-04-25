@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { trackContactFormSubmitted } from '@/lib/analytics'
 
 const inputStyle: React.CSSProperties = {
   background: 'var(--bg-subtle)',
@@ -25,9 +26,18 @@ const labelStyle: React.CSSProperties = {
 
 export function Contact() {
   const [submitted, setSubmitted] = useState(false)
+  const [email, setEmail] = useState('')
+  const [company, setCompany] = useState('')
+  const [message, setMessage] = useState('')
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    trackContactFormSubmitted({
+      form_name: 'contact_recruiter',
+      recruiter_email: email,
+      recruiter_company: company,
+      recruiter_message: message,
+    })
     setSubmitted(true)
   }
 
@@ -229,6 +239,8 @@ export function Contact() {
                   type="email"
                   placeholder="sarah@company.com"
                   required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   style={inputStyle}
                   onFocus={(e) => {
                     e.currentTarget.style.borderColor = 'var(--brand)'
@@ -246,6 +258,8 @@ export function Contact() {
                 <input
                   type="text"
                   placeholder="Acme Corp"
+                  value={company}
+                  onChange={(e) => setCompany(e.target.value)}
                   style={inputStyle}
                   onFocus={(e) => {
                     e.currentTarget.style.borderColor = 'var(--brand)'
@@ -300,6 +314,8 @@ export function Contact() {
                 <label style={labelStyle}>Message (optional)</label>
                 <textarea
                   placeholder="Tell me a bit about the role and company…"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
                   style={{
                     ...inputStyle,
                     resize: 'vertical',

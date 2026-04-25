@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import { trackCtaClicked } from '@/lib/analytics'
 
 const stats = [
   { num: '8+', label: 'Years in growth & performance' },
@@ -92,6 +93,7 @@ export function Hero() {
           <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
             <a
               href="#contact"
+              onClick={() => trackCtaClicked('Schedule a call', 'hero', '#contact')}
               style={{
                 background: 'var(--brand)',
                 color: 'oklch(10% 0 0)',
@@ -118,6 +120,7 @@ export function Hero() {
               href="https://julianjais.com"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackCtaClicked('See live GTM demo', 'hero', 'https://julianjais.com')}
               style={{
                 background: 'transparent',
                 color: 'var(--fg-2)',
