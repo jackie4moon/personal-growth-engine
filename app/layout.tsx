@@ -45,6 +45,7 @@ export const metadata: Metadata = {
 }
 
 const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID
+const COOKIEYES_SCRIPT_ID = process.env.NEXT_PUBLIC_COOKIEYES_SCRIPT_ID
 
 export default function RootLayout({
   children,
@@ -56,12 +57,41 @@ export default function RootLayout({
       lang="en"
       className={`${spaceGrotesk.variable} ${dmSans.variable} ${jetbrainsMono.variable} bg-[oklch(8%_0_0)]`}
     >
+      {/*
+        SCRIPT LOADING ORDER (critical for DSGVO / Consent Mode v2):
+        1. Consent Mode defaults (beforeInteractive inline) — sets all storage to "denied"
+           before any GTM tag can fire. GTM reads this on startup.
+        2. CookieYes (afterInteractive) — shows cookie banner, fires consent-update events
+           which trigger updateGtmConsent() + setConsent() in lib/analytics.ts
+        3. GTM (afterInteractive, after CookieYes) — container starts but all tags are
+           blocked until CookieYes fires the consent-update event
+      */}
+
+      {/* 1. GTM Consent Mode v2 — default all storage to denied */}
+      <Script id="consent-mode-defaults" strategy="beforeInteractive">{`
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('consent', 'default', {
+          analytics_storage:     'denied',
+          ad_storage:            'denied',
+          ad_user_data:          'denied',
+          ad_personalization:    'denied',
+          functionality_storage: 'denied',
+          security_storage:      'granted'
+        });
+      `}</Script>
+
+      {/* 2. CookieYes — DSGVO cookie consent manager */}
+      {COOKIEYES_SCRIPT_ID && (
+        <Script
+          id="cookieyes"
+          src={`https://cdn-cookieyes.com/client_data/${COOKIEYES_SCRIPT_ID}/script.js`}
+          strategy="afterInteractive"
+        />
+      )}
+
       <body className="antialiased" style={{ fontFamily: 'var(--font-body), DM Sans, system-ui, sans-serif' }}>
-        {/*
-          GTM noscript fallback — renders an invisible iframe for users who have
-          JavaScript disabled. Must be the first element inside <body>.
-          TODO: Connect to Cookie Consent Banner (Phase 2) — only render after consent.
-        */}
+        {/* GTM noscript fallback for users with JavaScript disabled */}
         {GTM_ID && (
           <noscript>
             <iframe
@@ -77,15 +107,7 @@ export default function RootLayout({
           {children}
         </AnalyticsProvider>
 
-        {/*
-          GTM container script — strategy="afterInteractive" injects the script
-          after the page becomes interactive (non-blocking for Core Web Vitals).
-          GTM itself sets no cookies; individual tags inside GTM are blocked by
-          Consent Mode v2 until the user accepts via the cookie banner.
-          TODO: Connect to Cookie Consent Banner (Phase 2) — call
-                gtag('consent', 'update', { analytics_storage: 'granted' })
-                after user accepts.
-        */}
+        {/* 3. GTM container — afterInteractive, loads after CookieYes */}
         {GTM_ID && (
           <Script id="gtm-script" strategy="afterInteractive">
             {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':

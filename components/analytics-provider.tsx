@@ -2,14 +2,19 @@
 
 import { useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
-import { trackPageView, trackSectionViewed } from '@/lib/analytics'
+import { trackPageView, trackSectionViewed, initConsentListeners } from '@/lib/analytics'
 
 // Sections to observe — must match the `id` attributes in page.tsx
-const TRACKED_SECTIONS = ['hero', 'about', 'stack', 'projects', 'experience', 'contact']
+const TRACKED_SECTIONS = ['hero', 'about', 'stack', 'projects', 'experience', 'book', 'contact']
 
 export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const pageStartRef = useRef(Date.now())
+
+  // Initialize CookieYes consent event listeners once on mount
+  useEffect(() => {
+    initConsentListeners()
+  }, [])
 
   // Track page view on every route change
   useEffect(() => {

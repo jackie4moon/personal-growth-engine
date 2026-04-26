@@ -3,6 +3,52 @@
 import { useState } from 'react'
 import { trackContactFormSubmitted } from '@/lib/analytics'
 
+// ---------------------------------------------------------------------------
+// HubSpot Forms API — submits form data to HubSpot CRM without a backend.
+// HubSpot explicitly allows client-side submissions to this endpoint.
+// The portalId + formGuid identify your specific HubSpot form.
+// ---------------------------------------------------------------------------
+async function submitToHubSpot(data: {
+  email: string
+  company: string
+  message: string
+}): Promise<boolean> {
+  const portalId = process.env.NEXT_PUBLIC_HUBSPOT_PORTAL_ID
+  const formGuid = process.env.NEXT_PUBLIC_HUBSPOT_FORM_GUID
+
+  if (!portalId || !formGuid) {
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('[HubSpot] Add NEXT_PUBLIC_HUBSPOT_PORTAL_ID and NEXT_PUBLIC_HUBSPOT_FORM_GUID to .env.local')
+    }
+    return false
+  }
+
+  try {
+    const res = await fetch(
+      `https://api.hsforms.com/submissions/v3/integration/submit/${portalId}/${formGuid}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fields: [
+            { name: 'email',   value: data.email },
+            { name: 'company', value: data.company },
+            // 'message' is the internal field name — verify in HubSpot → Form → Field Internal Name
+            { name: 'message', value: data.message },
+          ],
+          context: {
+            pageUri:  typeof window !== 'undefined' ? window.location.href : '',
+            pageName: typeof document !== 'undefined' ? document.title : '',
+          },
+        }),
+      }
+    )
+    return res.ok
+  } catch {
+    return false
+  }
+}
+
 const inputStyle: React.CSSProperties = {
   background: 'var(--bg-subtle)',
   border: '1px solid oklch(28% 0 0)',
@@ -26,18 +72,28 @@ const labelStyle: React.CSSProperties = {
 
 export function Contact() {
   const [submitted, setSubmitted] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
   const [email, setEmail] = useState('')
   const [company, setCompany] = useState('')
   const [message, setMessage] = useState('')
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (submitting) return
+    setSubmitting(true)
+
+    // Fire tracking event regardless of HubSpot API result
     trackContactFormSubmitted({
       form_name: 'contact_recruiter',
       recruiter_email: email,
       recruiter_company: company,
       recruiter_message: message,
     })
+
+    // Send to HubSpot CRM (non-blocking — form shows success even if HubSpot fails)
+    await submitToHubSpot({ email, company, message })
+
+    setSubmitting(false)
     setSubmitted(true)
   }
 
@@ -335,24 +391,25 @@ export function Contact() {
 
               <button
                 type="submit"
+                disabled={submitting}
                 style={{
-                  background: 'var(--brand)',
-                  color: 'oklch(10% 0 0)',
+                  background: submitting ? 'var(--bg-elevated)' : 'var(--brand)',
+                  color: submitting ? 'var(--fg-2)' : 'oklch(10% 0 0)',
                   fontFamily: 'var(--font-body), DM Sans, sans-serif',
                   fontSize: '14px',
                   fontWeight: 600,
                   padding: '12px 24px',
                   borderRadius: '8px',
                   border: 'none',
-                  cursor: 'pointer',
+                  cursor: submitting ? 'not-allowed' : 'pointer',
                   width: '100%',
                   transition: 'background 120ms var(--ease), transform 80ms',
-                  boxShadow: '0 0 24px oklch(65% 0.17 78 / 0.08)',
+                  boxShadow: submitting ? 'none' : '0 0 24px oklch(65% 0.17 78 / 0.08)',
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--brand-h)')}
-                onMouseLeave={(e) => (e.currentTarget.style.background = 'var(--brand)')}
+                onMouseEnter={(e) => { if (!submitting) e.currentTarget.style.background = 'var(--brand-h)' }}
+                onMouseLeave={(e) => { if (!submitting) e.currentTarget.style.background = 'var(--brand)' }}
               >
-                Send &amp; schedule a call →
+                {submitting ? 'Sending…' : 'Send & schedule a call →'}
               </button>
 
               <p

@@ -3,17 +3,17 @@
 declare global {
   interface Window {
     dataLayer: Record<string, unknown>[]
+    // gtag is provided by GTM after it loads; defined here so TypeScript knows it exists
+    gtag?: (...args: unknown[]) => void
   }
 }
 
-// Module-level instance avoids conflicts with RudderStack's own global type declarations
+// Module-level RudderStack instance — avoids conflicts with SDK's own global types
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let _rs: any = null
 
 // ---------------------------------------------------------------------------
 // Consent state
-// TODO: Connect to Cookie Consent Banner (Phase 2)
-// The banner should call setConsent(true) when the user accepts tracking.
 // ---------------------------------------------------------------------------
 let _consentGranted = false
 
@@ -27,8 +27,55 @@ export function getConsent(): boolean {
 }
 
 // ---------------------------------------------------------------------------
-// RudderStack initialization
-// Loads the SDK lazily after consent is granted.
+// GTM Consent Mode v2 update
+// Tells GTM (and therefore GA4, Google Ads etc.) that the user has consented.
+// This is separate from RudderStack consent and required for Google's ecosystem.
+// ---------------------------------------------------------------------------
+function updateGtmConsent(categories: { analytics: boolean; advertisement: boolean }): void {
+  if (typeof window === 'undefined') return
+  window.dataLayer = window.dataLayer || []
+
+  const push = (...args: unknown[]) => window.dataLayer.push(args as unknown as Record<string, unknown>)
+
+  push('consent', 'update', {
+    analytics_storage: categories.analytics ? 'granted' : 'denied',
+    ad_storage: categories.advertisement ? 'granted' : 'denied',
+    ad_user_data: categories.advertisement ? 'granted' : 'denied',
+    ad_personalization: categories.advertisement ? 'granted' : 'denied',
+    functionality_storage: 'granted',
+  })
+}
+
+// ---------------------------------------------------------------------------
+// CookieYes Consent Listener
+// CookieYes fires 'cookieyes-consent-update' on every consent interaction AND
+// on page load for returning visitors (reading stored consent from localStorage).
+// Call this once from AnalyticsProvider on mount.
+// ---------------------------------------------------------------------------
+export function initConsentListeners(): void {
+  if (typeof window === 'undefined') return
+
+  const handleConsentUpdate = (e: Event) => {
+    const detail = (e as CustomEvent<{ accepted: string[]; rejected: string[] }>).detail
+    if (!detail) return
+
+    const analyticsAccepted = detail.accepted?.includes('analytics') ?? false
+    const adAccepted = detail.accepted?.includes('advertisement') ?? false
+
+    // Update GTM Consent Mode first (affects Google tags inside GTM)
+    updateGtmConsent({ analytics: analyticsAccepted, advertisement: adAccepted })
+
+    // Then update RudderStack gate (affects our CDP + all RudderStack destinations)
+    if (analyticsAccepted && !_consentGranted) {
+      setConsent(true)
+    }
+  }
+
+  window.addEventListener('cookieyes-consent-update', handleConsentUpdate)
+}
+
+// ---------------------------------------------------------------------------
+// RudderStack initialization — lazy, only after consent
 // ---------------------------------------------------------------------------
 async function initRudderStack(): Promise<void> {
   if (typeof window === 'undefined' || _rs) return
@@ -56,9 +103,8 @@ async function initRudderStack(): Promise<void> {
 // DataLayer helper
 //
 // The GTM DataLayer is a JavaScript array that acts as an event bus between
-// your website and GTM. GTM listens to it and triggers tags when events arrive.
-// We push every event here so GTM tags (HubSpot pixel, Clarity, etc.) can also
-// react — without needing to know about RudderStack internals.
+// your website and GTM. GTM reads from it to trigger tags (HubSpot pixel,
+// LinkedIn, etc.) without you needing to hardcode those tags.
 // ---------------------------------------------------------------------------
 function pushToDataLayer(event: string, properties: Record<string, unknown>): void {
   if (typeof window === 'undefined') return
@@ -88,7 +134,6 @@ export function trackPageView(): void {
     referrer: document.referrer,
   }
   pushToDataLayer('page_view', properties)
-  // RudderStack page() call maps to a Page event in GA4 and HubSpot
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   _rs?.page(properties)
 }
@@ -125,4 +170,13 @@ export function trackCalendlyBookingInitiated(buttonLocation: string): void {
   trackEvent('calendly_booking_initiated', {
     button_location: buttonLocation,
   })
+}
+
+// Fires when the Calendly booking is actually confirmed (meeting scheduled)
+export function trackMeetingBooked(data: {
+  event_name: string
+  invitee_email?: string
+  scheduled_at?: string
+}): void {
+  trackEvent('meeting_booked', data as Record<string, unknown>)
 }
