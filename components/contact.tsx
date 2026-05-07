@@ -162,8 +162,8 @@ export function Contact() {
               },
               {
                 icon: 'in',
-                href: 'https://linkedin.com/in/julianjais',
-                label: 'linkedin.com/in/julianjais',
+                href: 'https://www.linkedin.com/in/julian-jais/',
+                label: 'linkedin.com/in/julian-jais',
                 iconFont: 'var(--font-mono)',
               },
               {

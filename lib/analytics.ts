@@ -146,13 +146,13 @@ export function trackSectionViewed(sectionName: string, timeOnPage: number): voi
 }
 
 export function trackCtaClicked(
-  buttonLabel: string,
-  buttonLocation: string,
+  ctaLabel: string,
+  ctaLocation: string,
   destinationUrl: string
 ): void {
   trackEvent('cta_clicked', {
-    button_label: buttonLabel,
-    button_location: buttonLocation,
+    cta_label: ctaLabel,
+    cta_location: ctaLocation,
     destination_url: destinationUrl,
   })
 }

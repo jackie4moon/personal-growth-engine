@@ -54,7 +54,7 @@ export function Hero() {
                 display: 'inline-block',
               }}
             />
-            Open to GTM Architect · Growth Ops · AI Lead roles
+            Open to Head of Growth · GTM Architect · AI Implementation Lead roles
           </div>
 
           {/* Title */}
@@ -92,8 +92,8 @@ export function Hero() {
           {/* CTAs */}
           <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
             <a
-              href="#contact"
-              onClick={() => trackCtaClicked('Schedule a call', 'hero', '#contact')}
+              href="#book"
+              onClick={() => trackCtaClicked('schedule_a_call', 'hero', '#book')}
               style={{
                 background: 'var(--brand)',
                 color: 'oklch(10% 0 0)',
@@ -206,7 +206,7 @@ export function Hero() {
                 marginTop: '3px',
               }}
             >
-              Growth Ops · GTM · AI Marketing
+              Growth · GTM · AI
             </div>
           </div>
         </div>

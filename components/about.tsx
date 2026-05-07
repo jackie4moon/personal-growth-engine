@@ -3,7 +3,7 @@
 const sidebarItems = [
   { label: 'Location', value: 'Markkleeberg, Germany' },
   { label: 'Availability', value: 'August 2026 · Remote-first · International' },
-  { label: 'Target roles', value: 'GTM Architect · Growth Ops Manager · MarTech Specialist · AI Implementation Lead' },
+  { label: 'Target roles', value: 'Head of Growth · Head of Performance Marketing · Growth Ops Manager · GTM Architect · MarTech Specialist · AI Implementation Lead' },
   { label: 'Languages', value: 'German (native) · English (C1)' },
   { label: 'Visa / work permit', value: 'EU citizen' },
   { label: 'Currently', value: 'Advanced cert: AI & Automation in Digital Marketing' },
