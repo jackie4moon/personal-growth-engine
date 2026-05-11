@@ -53,8 +53,8 @@ async function submitToHubSpot(data: {
 }
 
 // ---------------------------------------------------------------------------
-// n8n Webhook — fire-and-forget, does not block the UI.
-// Triggers Workflow 2: Clay enrichment → HubSpot update → personalised reply.
+// n8n Webhook — fire-and-forget via /api/n8n proxy (avoids CORS).
+// Triggers: Clay enrichment → HubSpot update → personalised reply.
 // ---------------------------------------------------------------------------
 function fireN8nWebhook(data: {
   firstname: string
@@ -64,10 +64,7 @@ function fireN8nWebhook(data: {
   role_type: string
   message: string
 }): void {
-  const webhookUrl = process.env.NEXT_PUBLIC_N8N_WEBHOOK_URL
-  if (!webhookUrl) return
-
-  fetch(webhookUrl, {
+  fetch('/api/n8n', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
