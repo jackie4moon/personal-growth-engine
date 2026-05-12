@@ -1,19 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-// Server-side proxy — avoids CORS when calling n8n from the browser.
-// The client POSTs to /api/n8n; this function forwards it to n8n server-to-server.
+// Server-side proxy — avoids CORS when calling Clay from the browser.
+// Posts form data directly to Clay webhook; Clay enriches and calls n8n relay.
 export async function POST(request: NextRequest) {
-  const webhookUrl = process.env.N8N_WEBHOOK_URL
-  if (!webhookUrl) {
-    return NextResponse.json({ error: 'N8N_WEBHOOK_URL not configured' }, { status: 500 })
+  const clayUrl = process.env.CLAY_WEBHOOK_URL
+  if (!clayUrl) {
+    return NextResponse.json({ error: 'CLAY_WEBHOOK_URL not configured' }, { status: 500 })
   }
 
   try {
     const body = await request.json()
-    await fetch(webhookUrl, {
+    await fetch(clayUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
+      body: JSON.stringify({
+        email:     body.email,
+        name:      `${body.firstname} ${body.lastname}`,
+        firstname: body.firstname,
+        lastname:  body.lastname,
+        company:   body.company,
+        role_type: body.role_type,
+        message:   body.message,
+        source:    'contact_form',
+      }),
     })
     return NextResponse.json({ ok: true })
   } catch {
