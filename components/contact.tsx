@@ -175,7 +175,7 @@ export function Contact() {
               marginBottom: '16px',
             }}
           >
-            {"Let's talk."}<br />30 minutes is enough.
+            Get in touch.
           </h2>
           <p
             style={{
@@ -186,10 +186,10 @@ export function Contact() {
               maxWidth: '400px',
             }}
           >
-            If you are hiring for a GTM Architect, Growth Ops Manager,
-            MarTech Specialist, or AI Implementation Lead and think we might
-            be a fit, fill in the form. I will get back to you within
-            24 hours with a calendar link.
+            No suitable time slot available, or prefer to reach out first?
+            Fill in the form — whether you have a question, want to learn
+            more about my background, or just want to start a conversation.
+            I&apos;ll get back to you within 24 hours.
           </p>
 
           {/* Contact links */}
@@ -249,8 +249,8 @@ export function Contact() {
             </div>
             <p style={{ fontSize: '13px', color: 'var(--fg-3)', lineHeight: 1.6 }}>
               Your form submission triggers an n8n workflow that enriches your
-              profile via Clay and sends you an AI-personalised reply — the exact
-              pipeline I build for clients. Live demo.
+              profile via Clay and sends you an AI-personalised reply — a live
+              automation running on this portfolio.
             </p>
           </div>
         </div>
@@ -353,11 +353,11 @@ export function Contact() {
                 onMouseEnter={(e) => { if (!submitting) e.currentTarget.style.background = 'var(--brand-h)' }}
                 onMouseLeave={(e) => { if (!submitting) e.currentTarget.style.background = 'var(--brand)'   }}
               >
-                {submitting ? 'Sending…' : 'Send & schedule a call →'}
+                {submitting ? 'Sending…' : 'Send message →'}
               </button>
 
               <p style={{ fontSize: '11.5px', color: 'var(--fg-3)', textAlign: 'center', marginTop: '-4px' }}>
-                {"I'll respond within 24 hours to confirm a time."}
+                {"I'll respond within 24 hours."}
               </p>
             </form>
           ) : (
@@ -377,7 +377,7 @@ export function Contact() {
                 Message sent.
               </div>
               <p style={{ fontSize: '13.5px', color: 'var(--fg-2)', lineHeight: 1.6 }}>
-                {"Thanks — I'll get back to you within 24 hours with a calendar link."}
+                {"Thanks — I'll get back to you within 24 hours."}
               </p>
             </div>
           )}
