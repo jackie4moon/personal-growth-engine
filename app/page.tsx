@@ -4,6 +4,7 @@ import { About } from '@/components/about'
 import { Stack } from '@/components/stack'
 import { Project } from '@/components/project'
 import { Experience } from '@/components/experience'
+import { BookSection } from '@/components/book-section'
 import { Contact } from '@/components/contact'
 import { Footer } from '@/components/footer'
 
@@ -22,6 +23,7 @@ export default function Page() {
       <Stack />
       <Project />
       <Experience />
+      <BookSection />
       <Contact />
       <Footer />
 

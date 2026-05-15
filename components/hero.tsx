@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import { trackCtaClicked } from '@/lib/analytics'
 
 const stats = [
   { num: '8+', label: 'Years in growth & performance' },
@@ -53,7 +54,7 @@ export function Hero() {
                 display: 'inline-block',
               }}
             />
-            Open to GTM Architect · Growth Ops · AI Lead roles
+            Open to Head of Growth · GTM Architect · AI Implementation Lead roles
           </div>
 
           {/* Title */}
@@ -91,7 +92,8 @@ export function Hero() {
           {/* CTAs */}
           <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
             <a
-              href="#contact"
+              href="#book"
+              onClick={() => trackCtaClicked('schedule_a_call', 'hero', '#book')}
               style={{
                 background: 'var(--brand)',
                 color: 'oklch(10% 0 0)',
@@ -118,6 +120,7 @@ export function Hero() {
               href="https://julianjais.com"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackCtaClicked('See live GTM demo', 'hero', 'https://julianjais.com')}
               style={{
                 background: 'transparent',
                 color: 'var(--fg-2)',
@@ -203,7 +206,7 @@ export function Hero() {
                 marginTop: '3px',
               }}
             >
-              Growth Ops · GTM · AI Marketing
+              Growth · GTM · AI
             </div>
           </div>
         </div>

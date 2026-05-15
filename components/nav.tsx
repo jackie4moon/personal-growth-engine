@@ -94,7 +94,7 @@ export function Nav() {
           ))}
           <li>
             <a
-              href="#contact"
+              href="#book"
               style={{
                 background: 'var(--brand)',
                 color: 'oklch(10% 0 0)',
@@ -170,7 +170,7 @@ export function Nav() {
             </a>
           ))}
           <a
-            href="#contact"
+            href="#book"
             onClick={() => setMenuOpen(false)}
             style={{
               marginTop: '8px',
