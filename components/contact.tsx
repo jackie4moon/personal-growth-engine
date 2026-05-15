@@ -189,7 +189,6 @@ export function Contact() {
             No suitable time slot available, or prefer to reach out first?
             Fill in the form — whether you have a question, want to learn
             more about my background, or just want to start a conversation.
-            I&apos;ll get back to you within 24 hours.
           </p>
 
           {/* Contact links */}
@@ -357,7 +356,7 @@ export function Contact() {
               </button>
 
               <p style={{ fontSize: '11.5px', color: 'var(--fg-3)', textAlign: 'center', marginTop: '-4px' }}>
-                {"I'll respond within 24 hours."}
+                {"You'll receive an AI-personalised reply within minutes — part of the automation running on this portfolio."}
               </p>
             </form>
           ) : (
@@ -377,7 +376,7 @@ export function Contact() {
                 Message sent.
               </div>
               <p style={{ fontSize: '13.5px', color: 'var(--fg-2)', lineHeight: 1.6 }}>
-                {"Thanks — I'll get back to you within 24 hours."}
+                {"Message received. You'll get an AI-personalised reply within the next few minutes."}
               </p>
             </div>
           )}
