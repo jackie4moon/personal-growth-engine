@@ -55,23 +55,85 @@ function updateGtmConsent(categories: { analytics: boolean; advertisement: boole
 export function initConsentListeners(): void {
   if (typeof window === 'undefined') return
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleConsentUpdate = (e: Event) => {
-    const detail = (e as CustomEvent<{ accepted: string[]; rejected: string[] }>).detail
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const detail = (e as CustomEvent<any>).detail
+    console.debug('[Analytics] CookieYes event fired:', e.type, detail)
     if (!detail) return
 
-    const analyticsAccepted = detail.accepted?.includes('analytics') ?? false
-    const adAccepted = detail.accepted?.includes('advertisement') ?? false
+    // CookieYes payload shapes have varied across versions. Support all known forms:
+    //   v1: { accepted: ['analytics', ...], rejected: [...] }
+    //   v2: { categories: { analytics: true, advertisement: false, ... } }
+    let analyticsAccepted = false
+    let adAccepted = false
+
+    if (Array.isArray(detail.accepted)) {
+      analyticsAccepted = detail.accepted.includes('analytics')
+      adAccepted = detail.accepted.includes('advertisement') || detail.accepted.includes('marketing')
+    } else if (detail.categories && typeof detail.categories === 'object') {
+      analyticsAccepted = !!detail.categories.analytics
+      adAccepted = !!(detail.categories.advertisement || detail.categories.marketing)
+    }
+
+    console.debug('[Analytics] Consent parsed:', { analyticsAccepted, adAccepted })
 
     // Update GTM Consent Mode first (affects Google tags inside GTM)
     updateGtmConsent({ analytics: analyticsAccepted, advertisement: adAccepted })
 
     // Then update RudderStack gate (affects our CDP + all RudderStack destinations)
     if (analyticsAccepted && !_consentGranted) {
+      console.debug('[Analytics] Granting consent → loading RudderStack')
       setConsent(true)
+      // Replay the initial page_view that was missed before consent was granted
+      trackPageView()
     }
   }
 
-  window.addEventListener('cookieyes-consent-update', handleConsentUpdate)
+  // Listen for ALL known CookieYes event name variants
+  const eventNames = [
+    'cookieyes_consent_update',  // underscore — current CookieYes versions
+    'cookieyes-consent-update',  // hyphen — older versions / fallback
+    'cookieyes_consent_renew',   // when user changes consent later
+  ]
+  eventNames.forEach((name) => {
+    document.addEventListener(name, handleConsentUpdate)
+    window.addEventListener(name, handleConsentUpdate)
+  })
+
+  console.debug('[Analytics] Consent listeners registered for:', eventNames)
+
+  // Read stored consent on first load (returning visitors who already accepted).
+  // CookieYes exposes a getCkyConsent() function once its script is loaded.
+  const readStoredConsent = () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const getCky = (window as any).getCkyConsent
+    if (typeof getCky !== 'function') return false
+    try {
+      const stored = getCky()
+      console.debug('[Analytics] Stored CookieYes consent:', stored)
+      if (stored?.categories?.analytics) {
+        handleConsentUpdate(
+          new CustomEvent('cookieyes_consent_update', { detail: stored })
+        )
+        return true
+      }
+    } catch (err) {
+      console.debug('[Analytics] readStoredConsent error:', err)
+    }
+    return false
+  }
+
+  // Try immediately; if CookieYes hasn't loaded yet, retry every 300ms for up to 5s.
+  if (!readStoredConsent()) {
+    let attempts = 0
+    const interval = setInterval(() => {
+      attempts++
+      if (readStoredConsent() || attempts > 16) {
+        clearInterval(interval)
+      }
+    }, 300)
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -84,19 +146,19 @@ async function initRudderStack(): Promise<void> {
   const dataPlaneUrl = process.env.NEXT_PUBLIC_RUDDERSTACK_DATA_PLANE_URL
 
   if (!writeKey || !dataPlaneUrl) {
-    if (process.env.NODE_ENV === 'development') {
-      console.warn(
-        '[Analytics] RudderStack not configured. ' +
-          'Add NEXT_PUBLIC_RUDDERSTACK_WRITE_KEY and NEXT_PUBLIC_RUDDERSTACK_DATA_PLANE_URL to .env.local'
-      )
-    }
+    console.warn(
+      '[Analytics] RudderStack not configured. ' +
+        'NEXT_PUBLIC_RUDDERSTACK_WRITE_KEY or NEXT_PUBLIC_RUDDERSTACK_DATA_PLANE_URL missing.'
+    )
     return
   }
 
+  console.debug('[Analytics] Loading RudderStack SDK with key', writeKey.slice(0, 6) + '...')
   const { RudderAnalytics } = await import('@rudderstack/analytics-js')
   const analytics = new RudderAnalytics()
   analytics.load(writeKey, dataPlaneUrl)
   _rs = analytics
+  console.debug('[Analytics] RudderStack SDK ready')
 }
 
 // ---------------------------------------------------------------------------
@@ -116,7 +178,12 @@ function pushToDataLayer(event: string, properties: Record<string, unknown>): vo
 // Core event helper — use this everywhere instead of calling RudderStack directly
 // ---------------------------------------------------------------------------
 export function trackEvent(event: string, properties: Record<string, unknown> = {}): void {
-  if (!_consentGranted || typeof window === 'undefined') return
+  if (typeof window === 'undefined') return
+  if (!_consentGranted) {
+    console.debug('[Analytics] trackEvent blocked (no consent):', event)
+    return
+  }
+  console.debug('[Analytics] trackEvent:', event, properties)
   pushToDataLayer(event, properties)
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   _rs?.track(event, properties)
@@ -127,12 +194,17 @@ export function trackEvent(event: string, properties: Record<string, unknown> = 
 // ---------------------------------------------------------------------------
 
 export function trackPageView(): void {
-  if (!_consentGranted || typeof window === 'undefined') return
+  if (typeof window === 'undefined') return
+  if (!_consentGranted) {
+    console.debug('[Analytics] page_view blocked (no consent yet)')
+    return
+  }
   const properties = {
     page_title: document.title,
     page_url: window.location.href,
     referrer: document.referrer,
   }
+  console.debug('[Analytics] page_view:', properties.page_url)
   pushToDataLayer('page_view', properties)
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   _rs?.page(properties)
