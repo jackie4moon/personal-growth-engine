@@ -206,8 +206,13 @@ export function trackPageView(): void {
   }
   console.debug('[Analytics] page_view:', properties.page_url)
   pushToDataLayer('page_view', properties)
+  // .page() — for HubSpot, segment-style destinations, GA4 page tracking
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   _rs?.page(properties)
+  // .track('page_view') — ensures GA4 BigQuery export receives it as a discoverable event
+  // (RudderStack→GA4 Measurement Protocol does not always forward .page() calls as page_view)
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  _rs?.track('page_view', properties)
 }
 
 export function trackSectionViewed(sectionName: string, timeOnPage: number): void {
