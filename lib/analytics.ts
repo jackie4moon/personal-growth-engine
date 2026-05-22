@@ -209,10 +209,11 @@ export function trackPageView(): void {
   // .page() — for HubSpot, segment-style destinations, GA4 page tracking
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   _rs?.page(properties)
-  // .track('page_view') — ensures GA4 BigQuery export receives it as a discoverable event
-  // (RudderStack→GA4 Measurement Protocol does not always forward .page() calls as page_view)
+  // .track('page_viewed') — GA4 reserves 'page_view' as a system event and silently drops
+  // custom events with that name. Using past-tense 'page_viewed' (matching our convention
+  // section_viewed / cta_clicked / contact_form_submitted) ensures GA4 BigQuery captures it.
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  _rs?.track('page_view', properties)
+  _rs?.track('page_viewed', properties)
 }
 
 export function trackSectionViewed(sectionName: string, timeOnPage: number): void {
