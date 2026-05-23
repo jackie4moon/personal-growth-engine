@@ -17,7 +17,7 @@ type EdgeData = { from: string; to: string }
 
 const NODE_W = 170
 const NODE_H = 76
-const CANVAS_W = 880
+const CANVAS_W = 820
 const CANVAS_H = 720
 
 const NODES: NodeData[] = [
@@ -27,22 +27,22 @@ const NODES: NodeData[] = [
     label: 'julianjais.com',
     icon: '🌐',
     sub: 'Next.js · Vercel',
-    x: 200,
+    x: 180,
     y: 20,
     highlight: true,
     tooltip:
-      'The portfolio website — every page view, CTA click and form submit is a trackable event.',
+      'The portfolio website. Page views, CTA clicks and form submissions are all instrumented as first-party events.',
   },
   {
     id: 'B',
     label: 'Calendly',
     icon: '📅',
-    sub: 'Meeting booked',
+    sub: 'Booking source',
     x: 580,
     y: 20,
     highlight: false,
     tooltip:
-      'When a recruiter books a call, Calendly fires a webhook that enters the automation pipeline.',
+      'New meetings are not pushed via webhook — n8n polls the Calendly API every 60 minutes and processes any new booking it finds.',
   },
 
   // Layer 2 — Capture Layer
@@ -50,71 +50,71 @@ const NODES: NodeData[] = [
     id: 'C',
     label: 'GTM Container',
     icon: '🏷️',
-    sub: 'Tag management · consent-aware',
-    x: 200,
+    sub: 'Tag manager · consent-aware',
+    x: 80,
     y: 140,
     highlight: false,
     tooltip:
-      'Google Tag Manager manages all tags with consent-mode defaults — no data without permission.',
+      "Loads the HubSpot Pixel and any future tags. All tags are gated by Google Consent Mode v2 defaults — nothing fires before the user accepts.",
   },
   {
     id: 'D',
     label: 'RudderStack CDP',
     icon: '🔀',
-    sub: 'Event capture · Fan-out routing',
-    x: 400,
+    sub: 'Event capture · fan-out routing',
+    x: 340,
     y: 140,
     highlight: true,
     tooltip:
-      'RudderStack receives every event and fans it out to multiple destinations simultaneously.',
+      'The actual CDP — RudderStack JS SDK lazy-loads after CookieYes consent. Every track() call fans out server-side to GA4, HubSpot and any future destination in one place.',
   },
 
-  // Layer 3 — Parallel outputs
+  // Layer 3 — Immediate destinations from capture
   {
     id: 'E',
     label: 'GA4',
     icon: '📊',
-    sub: 'Event tracking',
-    x: 60,
+    sub: 'Event analytics',
+    x: 80,
     y: 260,
     highlight: false,
     tooltip:
-      'GA4 receives behavioral events for funnel analysis and native BigQuery export.',
+      'Receives every track() event from RudderStack. GA4 has a native Daily BigQuery Export (EU region) — no service account key required.',
   },
   {
     id: 'F',
     label: 'HubSpot CRM',
     icon: '🟠',
-    sub: 'Contact identify',
-    x: 320,
+    sub: 'Contact record · two inputs',
+    x: 440,
     y: 260,
     highlight: false,
     tooltip:
-      "RudderStack's identify() call creates or updates the contact record in HubSpot CRM.",
-  },
-  {
-    id: 'G',
-    label: 'n8n Automation',
-    icon: '⚙️',
-    sub: 'Workflow engine · VPS',
-    x: 580,
-    y: 260,
-    highlight: true,
-    tooltip:
-      'n8n is the automation backbone — running on a self-hosted VPS, orchestrating all workflows.',
+      'Two upstream sources hit the same contact record: RudderStack identify() on form submission, and n8n batch upsert after Clay enrichment completes.',
   },
 
-  // Layer 4 — Enrichment
+  // Layer 4 — Pipeline (enrichment + orchestration)
   {
-    id: 'H',
+    id: 'G',
     label: 'Clay',
     icon: '🔬',
-    sub: 'Lead enrichment · scoring',
-    x: 580,
+    sub: 'Lead enrichment',
+    x: 200,
     y: 380,
     highlight: false,
     tooltip:
-      'Clay enriches every lead with company data, job title, tech stack, and funding stage.',
+      'Receives form data via the Next.js /api/n8n proxy and Calendly invitees via the n8n Poller. Enriches each lead with company, industry, size, funding stage and tech stack.',
+  },
+  {
+    id: 'H',
+    label: 'n8n Automation',
+    icon: '⚙️',
+    sub: 'Poller + Relay · self-hosted VPS',
+    x: 580,
+    y: 380,
+    highlight: true,
+    tooltip:
+      'Two workflows on the same VPS: the Poller hits Calendly hourly, and the Relay receives Clay-enriched payloads and fans them out to HubSpot, BigQuery and Claude.',
   },
 
   // Layer 5 — AI + Data
@@ -122,23 +122,23 @@ const NODES: NodeData[] = [
     id: 'I',
     label: 'Claude API',
     icon: '🤖',
-    sub: 'AI-personalised outreach',
+    sub: 'AI outreach generation',
     x: 440,
     y: 500,
     highlight: true,
     tooltip:
-      'Claude API writes a personalised outreach email based on enrichment data — no templates.',
+      'n8n sends an enriched prompt to Claude. For contact forms: a personalised reply. For Calendly bookings: a German pre-call briefing for Julian. No templates.',
   },
   {
     id: 'J',
     label: 'BigQuery',
     icon: '🗄️',
-    sub: 'Data warehouse · EU region',
-    x: 620,
+    sub: 'Warehouse · EU region',
+    x: 80,
     y: 500,
     highlight: false,
     tooltip:
-      'BigQuery stores all website events (GA4 export) and CRM data (n8n HTTP insert) in EU region.',
+      'Two writers: GA4 Daily Export populates analytics tables, and n8n HTTP REST API (OAuth2) writes the crm_data.contacts table — both in europe-west3 for GDPR.',
   },
 
   // Layer 6 — Outputs
@@ -146,42 +146,52 @@ const NODES: NodeData[] = [
     id: 'K',
     label: 'Gmail',
     icon: '✉️',
-    sub: 'AI reply · auto-sent',
+    sub: 'Auto-sent outreach',
     x: 440,
     y: 620,
     highlight: false,
     tooltip:
-      "The AI-written reply lands in the recruiter's inbox within minutes of their form submission.",
+      "The Claude reply lands in the recruiter's inbox within minutes of the form submission. For Calendly: the briefing arrives in Julian's inbox before the call.",
   },
   {
     id: 'L',
     label: 'Looker Studio',
     icon: '📈',
-    sub: 'Revenue analytics dashboard',
-    x: 620,
+    sub: 'Funnel + CRM dashboards',
+    x: 80,
     y: 620,
     highlight: false,
     tooltip:
-      'Looker Studio dashboards visualise the full funnel from first touch to pipeline opportunity.',
+      'Two pages: Website Funnel (page_viewed → cta_clicked → form_submitted → meeting_booked) reads from GA4 export. CRM & Lead Quality reads from crm_data.contacts.',
   },
 ]
 
 const EDGES: EdgeData[] = [
+  // Website loads tag manager + CDP
   { from: 'A', to: 'C' },
   { from: 'A', to: 'D' },
-  { from: 'B', to: 'G' },
-  { from: 'C', to: 'D' },
+  // Form data takes the Next.js proxy → Clay direct
+  { from: 'A', to: 'G' },
+  // n8n polls Calendly
+  { from: 'B', to: 'H' },
+  // GTM forwards HubSpot pixel events
+  { from: 'C', to: 'F' },
+  // RudderStack fan-out
   { from: 'D', to: 'E' },
   { from: 'D', to: 'F' },
-  { from: 'D', to: 'G' },
+  // GA4 native daily export
+  { from: 'E', to: 'J' },
+  // Clay → n8n Relay
   { from: 'G', to: 'H' },
+  // n8n Relay fans out
+  { from: 'H', to: 'F' },
   { from: 'H', to: 'I' },
   { from: 'H', to: 'J' },
+  // Final outputs
   { from: 'I', to: 'K' },
   { from: 'J', to: 'L' },
 ]
 
-// Endpoint helper: returns top/bottom/left/right midpoints of a node
 function nodeAnchor(
   node: NodeData,
   side: 'top' | 'bottom' | 'left' | 'right'
@@ -200,24 +210,33 @@ function nodeAnchor(
   }
 }
 
-// Pick sensible anchors based on relative position
 function pickEndpoints(
   from: NodeData,
   to: NodeData
 ): { p1: { x: number; y: number }; p2: { x: number; y: number } } {
-  // Same row → horizontal connector
+  // Same row → horizontal
   if (from.y === to.y) {
     if (from.x < to.x) {
       return { p1: nodeAnchor(from, 'right'), p2: nodeAnchor(to, 'left') }
     }
     return { p1: nodeAnchor(from, 'left'), p2: nodeAnchor(to, 'right') }
   }
-  // Otherwise: bottom of higher → top of lower
+  // Otherwise bottom-of-higher → top-of-lower (or reverse for backward edges)
   return {
     p1: nodeAnchor(from, from.y < to.y ? 'bottom' : 'top'),
     p2: nodeAnchor(to, from.y < to.y ? 'top' : 'bottom'),
   }
 }
+
+// Pair nodes for mobile 2-col grid (mirrors desktop layer rows)
+const MOBILE_PAIRS: [string, string][] = [
+  ['A', 'B'],
+  ['C', 'D'],
+  ['E', 'F'],
+  ['G', 'H'],
+  ['I', 'J'],
+  ['K', 'L'],
+]
 
 export function ArchitectureFlow() {
   const [hoveredId, setHoveredId] = useState<string | null>(null)
@@ -232,230 +251,275 @@ export function ArchitectureFlow() {
   const isEdgeActive = (e: EdgeData) =>
     hoveredId !== null && (e.from === hoveredId || e.to === hoveredId)
 
+  // Tooltip placement — left or right of node, whichever fits the canvas
+  const tooltipPos = hoveredNode
+    ? (() => {
+        const tooltipW = 260
+        const fitsRight = hoveredNode.x + NODE_W + 14 + tooltipW <= CANVAS_W
+        return {
+          left: fitsRight
+            ? hoveredNode.x + NODE_W + 14
+            : Math.max(hoveredNode.x - tooltipW - 14, 8),
+          top: Math.min(
+            Math.max(hoveredNode.y - 6, 8),
+            CANVAS_H - 140
+          ),
+        }
+      })()
+    : null
+
   return (
-    <div style={{ width: '100%', overflowX: 'auto' }}>
-      {/* DESKTOP VIEW — SVG-based flow */}
-      <div
-        className="arch-desktop"
-        style={{
-          position: 'relative',
-          width: CANVAS_W,
-          height: CANVAS_H,
-          margin: '0 auto',
-        }}
-      >
-        {/* SVG underlay: edges + arrows */}
-        <svg
-          width={CANVAS_W}
-          height={CANVAS_H}
-          style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none' }}
-          aria-hidden="true"
+    <div style={{ width: '100%' }}>
+      {/* DESKTOP — SVG flow */}
+      <div className="arch-desktop-wrap" style={{ overflowX: 'auto' }}>
+        <div
+          className="arch-desktop"
+          style={{
+            position: 'relative',
+            width: CANVAS_W,
+            height: CANVAS_H,
+            margin: '0 auto',
+          }}
         >
-          <defs>
-            <marker
-              id="arrow-default"
-              viewBox="0 0 10 10"
-              refX="9"
-              refY="5"
-              markerWidth="5"
-              markerHeight="5"
-              orient="auto-start-reverse"
-            >
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="oklch(40% 0 0)" />
-            </marker>
-            <marker
-              id="arrow-active"
-              viewBox="0 0 10 10"
-              refX="9"
-              refY="5"
-              markerWidth="6"
-              markerHeight="6"
-              orient="auto-start-reverse"
-            >
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="oklch(68% 0.17 78)" />
-            </marker>
-          </defs>
-
-          {EDGES.map((e) => {
-            const from = nodeById[e.from]
-            const to = nodeById[e.to]
-            const { p1, p2 } = pickEndpoints(from, to)
-            const active = isEdgeActive(e)
-            return (
-              <line
-                key={`${e.from}-${e.to}`}
-                x1={p1.x}
-                y1={p1.y}
-                x2={p2.x}
-                y2={p2.y}
-                stroke={active ? 'oklch(68% 0.17 78)' : 'oklch(28% 0 0)'}
-                strokeWidth={active ? 2 : 1.5}
-                strokeLinecap="round"
-                markerEnd={active ? 'url(#arrow-active)' : 'url(#arrow-default)'}
-                style={{ transition: 'stroke 180ms var(--ease), stroke-width 180ms var(--ease)' }}
-              />
-            )
-          })}
-        </svg>
-
-        {/* Nodes */}
-        {NODES.map((n) => {
-          const isHovered = hoveredId === n.id
-          const nodeStyle: CSSProperties = {
-            position: 'absolute',
-            left: n.x,
-            top: n.y,
-            width: NODE_W,
-            height: NODE_H,
-            background: n.highlight ? 'var(--brand-s)' : 'var(--bg-elevated)',
-            border: `1px solid ${n.highlight ? 'oklch(65% 0.17 78 / 0.35)' : 'var(--border)'}`,
-            borderRadius: 10,
-            padding: '10px 12px',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            gap: 4,
-            cursor: 'pointer',
-            transition: 'box-shadow 180ms var(--ease), border-color 180ms var(--ease), transform 180ms var(--ease)',
-            boxShadow: isHovered
-              ? '0 0 16px oklch(65% 0.17 78 / 0.3)'
-              : 'none',
-            borderColor: isHovered
-              ? 'oklch(68% 0.17 78)'
-              : n.highlight
-              ? 'oklch(65% 0.17 78 / 0.35)'
-              : 'var(--border)',
-            transform: isHovered ? 'translateY(-1px)' : 'none',
-          }
-          return (
-            <div
-              key={n.id}
-              role="button"
-              tabIndex={0}
-              aria-label={`${n.label} — ${n.sub}`}
-              onMouseEnter={() => setHoveredId(n.id)}
-              onMouseLeave={() => setHoveredId((prev) => (prev === n.id ? null : prev))}
-              onFocus={() => setHoveredId(n.id)}
-              onBlur={() => setHoveredId((prev) => (prev === n.id ? null : prev))}
-              style={nodeStyle}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span aria-hidden style={{ fontSize: 18, lineHeight: 1 }}>
-                  {n.icon}
-                </span>
-                <span
-                  style={{
-                    fontFamily: 'var(--font-display), Space Grotesk, sans-serif',
-                    fontSize: 13.5,
-                    fontWeight: 600,
-                    color: 'var(--fg)',
-                    letterSpacing: '-0.01em',
-                  }}
-                >
-                  {n.label}
-                </span>
-              </div>
-              <div
-                style={{
-                  fontFamily: 'var(--font-mono), JetBrains Mono, monospace',
-                  fontSize: 10.5,
-                  color: 'var(--fg-2)',
-                  letterSpacing: '0.01em',
-                  lineHeight: 1.3,
-                }}
-              >
-                {n.sub}
-              </div>
-            </div>
-          )
-        })}
-
-        {/* Tooltip overlay (desktop only) */}
-        {hoveredNode && (
-          <div
-            role="tooltip"
-            style={{
-              position: 'absolute',
-              left: Math.min(hoveredNode.x + NODE_W + 14, CANVAS_W - 270),
-              top: Math.max(hoveredNode.y - 4, 0),
-              width: 260,
-              background: 'oklch(10% 0 0 / 0.96)',
-              border: '1px solid var(--border)',
-              borderLeft: '2px solid var(--brand)',
-              borderRadius: 8,
-              padding: '12px 14px',
-              fontSize: 12.5,
-              color: 'var(--fg-2)',
-              lineHeight: 1.55,
-              pointerEvents: 'none',
-              zIndex: 10,
-              boxShadow: '0 6px 24px oklch(0% 0 0 / 0.4)',
-            }}
+          <svg
+            width={CANVAS_W}
+            height={CANVAS_H}
+            style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none' }}
+            aria-hidden="true"
           >
-            <div
-              style={{
-                fontFamily: 'var(--font-mono), JetBrains Mono, monospace',
-                fontSize: 10,
-                color: 'var(--brand)',
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                marginBottom: 6,
-              }}
-            >
-              {hoveredNode.label}
-            </div>
-            <div>{hoveredNode.tooltip}</div>
-          </div>
-        )}
-      </div>
+            <defs>
+              <marker
+                id="arrow-default"
+                viewBox="0 0 10 10"
+                refX="9"
+                refY="5"
+                markerWidth="5"
+                markerHeight="5"
+                orient="auto-start-reverse"
+              >
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="oklch(40% 0 0)" />
+              </marker>
+              <marker
+                id="arrow-active"
+                viewBox="0 0 10 10"
+                refX="9"
+                refY="5"
+                markerWidth="6"
+                markerHeight="6"
+                orient="auto-start-reverse"
+              >
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="oklch(68% 0.17 78)" />
+              </marker>
+            </defs>
 
-      {/* MOBILE VIEW — vertical stack */}
-      <div className="arch-mobile" style={{ display: 'none', flexDirection: 'column', gap: 12 }}>
-        {NODES.map((n, i) => (
-          <div key={n.id}>
-            <div
-              style={{
-                background: n.highlight ? 'var(--brand-s)' : 'var(--bg-elevated)',
-                border: `1px solid ${n.highlight ? 'oklch(65% 0.17 78 / 0.35)' : 'var(--border)'}`,
-                borderRadius: 10,
-                padding: '14px 16px',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-                <span aria-hidden style={{ fontSize: 22, lineHeight: 1 }}>
-                  {n.icon}
-                </span>
-                <div>
-                  <div
+            {EDGES.map((e) => {
+              const from = nodeById[e.from]
+              const to = nodeById[e.to]
+              const { p1, p2 } = pickEndpoints(from, to)
+              const active = isEdgeActive(e)
+              return (
+                <line
+                  key={`${e.from}-${e.to}`}
+                  x1={p1.x}
+                  y1={p1.y}
+                  x2={p2.x}
+                  y2={p2.y}
+                  stroke={active ? 'oklch(68% 0.17 78)' : 'oklch(28% 0 0)'}
+                  strokeWidth={active ? 2 : 1.5}
+                  strokeLinecap="round"
+                  markerEnd={active ? 'url(#arrow-active)' : 'url(#arrow-default)'}
+                  style={{
+                    transition: 'stroke 180ms var(--ease), stroke-width 180ms var(--ease)',
+                  }}
+                />
+              )
+            })}
+          </svg>
+
+          {NODES.map((n) => {
+            const isHovered = hoveredId === n.id
+            const nodeStyle: CSSProperties = {
+              position: 'absolute',
+              left: n.x,
+              top: n.y,
+              width: NODE_W,
+              height: NODE_H,
+              background: n.highlight ? 'var(--brand-s)' : 'var(--bg-elevated)',
+              border: `1px solid ${
+                isHovered
+                  ? 'oklch(68% 0.17 78)'
+                  : n.highlight
+                  ? 'oklch(65% 0.17 78 / 0.35)'
+                  : 'var(--border)'
+              }`,
+              borderRadius: 10,
+              padding: '10px 12px',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              gap: 4,
+              cursor: 'pointer',
+              transition:
+                'box-shadow 180ms var(--ease), border-color 180ms var(--ease), transform 180ms var(--ease)',
+              boxShadow: isHovered ? '0 0 16px oklch(65% 0.17 78 / 0.3)' : 'none',
+              transform: isHovered ? 'translateY(-1px)' : 'none',
+            }
+            return (
+              <div
+                key={n.id}
+                role="button"
+                tabIndex={0}
+                aria-label={`${n.label} — ${n.sub}`}
+                onMouseEnter={() => setHoveredId(n.id)}
+                onMouseLeave={() => setHoveredId((prev) => (prev === n.id ? null : prev))}
+                onFocus={() => setHoveredId(n.id)}
+                onBlur={() => setHoveredId((prev) => (prev === n.id ? null : prev))}
+                style={nodeStyle}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span aria-hidden style={{ fontSize: 18, lineHeight: 1 }}>
+                    {n.icon}
+                  </span>
+                  <span
                     style={{
                       fontFamily: 'var(--font-display), Space Grotesk, sans-serif',
-                      fontSize: 15,
+                      fontSize: 13.5,
                       fontWeight: 600,
                       color: 'var(--fg)',
+                      letterSpacing: '-0.01em',
                     }}
                   >
                     {n.label}
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: 'var(--font-mono), JetBrains Mono, monospace',
-                      fontSize: 10.5,
-                      color: 'var(--fg-2)',
-                    }}
-                  >
-                    {n.sub}
-                  </div>
+                  </span>
+                </div>
+                <div
+                  style={{
+                    fontFamily: 'var(--font-mono), JetBrains Mono, monospace',
+                    fontSize: 10.5,
+                    color: 'var(--fg-2)',
+                    letterSpacing: '0.01em',
+                    lineHeight: 1.3,
+                  }}
+                >
+                  {n.sub}
                 </div>
               </div>
-              <div style={{ fontSize: 12.5, color: 'var(--fg-2)', lineHeight: 1.55 }}>
-                {n.tooltip}
+            )
+          })}
+
+          {hoveredNode && tooltipPos && (
+            <div
+              role="tooltip"
+              style={{
+                position: 'absolute',
+                left: tooltipPos.left,
+                top: tooltipPos.top,
+                width: 260,
+                background: 'oklch(10% 0 0 / 0.96)',
+                border: '1px solid var(--border)',
+                borderLeft: '2px solid var(--brand)',
+                borderRadius: 8,
+                padding: '12px 14px',
+                fontSize: 12.5,
+                color: 'var(--fg-2)',
+                lineHeight: 1.55,
+                pointerEvents: 'none',
+                zIndex: 10,
+                boxShadow: '0 6px 24px oklch(0% 0 0 / 0.4)',
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: 'var(--font-mono), JetBrains Mono, monospace',
+                  fontSize: 10,
+                  color: 'var(--brand)',
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  marginBottom: 6,
+                }}
+              >
+                {hoveredNode.label}
               </div>
+              <div>{hoveredNode.tooltip}</div>
             </div>
-            {i < NODES.length - 1 && (
+          )}
+        </div>
+      </div>
+
+      {/* MOBILE — 2-column grid of pairs */}
+      <div className="arch-mobile" style={{ display: 'none' }}>
+        {MOBILE_PAIRS.map((pair, rowIdx) => (
+          <div key={`row-${rowIdx}`}>
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: 10,
+              }}
+            >
+              {pair.map((id) => {
+                const n = nodeById[id]
+                return (
+                  <div
+                    key={id}
+                    style={{
+                      background: n.highlight ? 'var(--brand-s)' : 'var(--bg-elevated)',
+                      border: `1px solid ${
+                        n.highlight ? 'oklch(65% 0.17 78 / 0.35)' : 'var(--border)'
+                      }`,
+                      borderRadius: 10,
+                      padding: '12px 12px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 6,
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span aria-hidden style={{ fontSize: 18, lineHeight: 1 }}>
+                        {n.icon}
+                      </span>
+                      <span
+                        style={{
+                          fontFamily: 'var(--font-display), Space Grotesk, sans-serif',
+                          fontSize: 13,
+                          fontWeight: 600,
+                          color: 'var(--fg)',
+                          letterSpacing: '-0.01em',
+                        }}
+                      >
+                        {n.label}
+                      </span>
+                    </div>
+                    <div
+                      style={{
+                        fontFamily: 'var(--font-mono), JetBrains Mono, monospace',
+                        fontSize: 9.5,
+                        color: 'var(--fg-2)',
+                        letterSpacing: '0.01em',
+                        lineHeight: 1.35,
+                      }}
+                    >
+                      {n.sub}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 11.5,
+                        color: 'var(--fg-2)',
+                        lineHeight: 1.5,
+                        marginTop: 2,
+                      }}
+                    >
+                      {n.tooltip}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+            {rowIdx < MOBILE_PAIRS.length - 1 && (
               <div
                 aria-hidden
                 style={{
-                  height: 18,
+                  height: 22,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -473,9 +537,9 @@ export function ArchitectureFlow() {
       </div>
 
       <style>{`
-        @media (max-width: 880px) {
-          .arch-desktop { display: none !important; }
-          .arch-mobile { display: flex !important; }
+        @media (max-width: 820px) {
+          .arch-desktop-wrap { display: none !important; }
+          .arch-mobile { display: block !important; }
         }
       `}</style>
     </div>
