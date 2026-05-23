@@ -117,10 +117,8 @@ export function Hero() {
               Schedule a call <span aria-hidden>→</span>
             </a>
             <a
-              href="https://julianjais.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => trackCtaClicked('See live GTM demo', 'hero', 'https://julianjais.com')}
+              href="/demo"
+              onClick={() => trackCtaClicked('See live GTM demo', 'hero', '/demo')}
               style={{
                 background: 'transparent',
                 color: 'var(--fg-2)',
@@ -148,7 +146,7 @@ export function Hero() {
                 e.currentTarget.style.color = 'var(--fg-2)'
               }}
             >
-              See live GTM demo ↗
+              See live GTM demo <span aria-hidden>→</span>
             </a>
           </div>
         </div>
