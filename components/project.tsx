@@ -92,9 +92,7 @@ export function Project() {
             </p>
           </div>
           <a
-            href="https://julianjais.com"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/demo"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -113,7 +111,7 @@ export function Project() {
             onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--brand-h)')}
             onMouseLeave={(e) => (e.currentTarget.style.background = 'var(--brand)')}
           >
-            Live demo ↗
+            Live demo <span aria-hidden>→</span>
           </a>
         </div>
 

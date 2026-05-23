@@ -42,7 +42,7 @@ export function Footer() {
 
       <div style={{ display: 'flex', gap: '20px' }}>
         {[
-          { href: 'https://julianjais.com', label: 'GTM Demo' },
+          { href: '/demo', label: 'GTM Demo' },
           { href: 'https://linkedin.com/in/julianjais', label: 'LinkedIn' },
           { href: 'mailto:julian.u.jais@gmail.com', label: 'Email' },
         ].map((l) => (
