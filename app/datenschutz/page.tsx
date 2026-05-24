@@ -4,9 +4,9 @@ import { Nav } from '@/components/nav'
 import { Footer } from '@/components/footer'
 
 export const metadata: Metadata = {
-  title: 'Datenschutzerklärung — Julian Jais',
+  title: 'Privacy Policy — Julian Jais',
   description:
-    'Informationen zur Verarbeitung personenbezogener Daten auf julianjais.com.',
+    'Information on the processing of personal data on julianjais.com.',
   robots: 'noindex, nofollow',
 }
 
@@ -208,74 +208,133 @@ const liDot: CSSProperties = {
 }
 
 const automationSteps: {
+  number: string
   title: string
   body: string[]
   legal?: string
 }[] = [
   {
-    title: '1. Weiterleitung an n8n',
+    number: '1',
+    title: 'Forwarding to n8n',
     body: [
-      'Deine Formulardaten werden an einen selbst gehosteten n8n-Server weitergeleitet, der als Automatisierungs-Orchestrator fungiert.',
+      'Your form data is forwarded to a self-hosted n8n server that acts as the automation orchestrator.',
     ],
   },
   {
-    title: '2. Datenanreicherung via Clay',
+    number: '2',
+    title: 'Data enrichment via Clay',
     body: [
-      'Auf Basis deiner E-Mail-Adresse und deines Unternehmens reichert Clay (Clay Labs Inc., USA) die Anfrage mit öffentlich verfügbaren Informationen an — etwa Unternehmensbranche, Unternehmensgröße, Finanzierungsphase und technologischem Stack.',
-      'Diese Anreicherung erfolgt auf Basis öffentlich zugänglicher Quellen (z. B. LinkedIn, Unternehmenswebsites, Datenbanken). Du wirst gemäß Art. 14 DSGVO hiermit über diese Verarbeitung informiert.',
+      'Based on your email address and company, Clay (Clay Labs Inc., USA) enriches the inquiry with publicly available information — such as industry, company size, funding stage and tech stack.',
+      'This enrichment is based on publicly accessible sources (e.g. LinkedIn, company websites, databases). Pursuant to Art. 14 GDPR, you are hereby informed of this processing.',
     ],
     legal:
-      'Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Qualifizierung eingehender Kontaktanfragen). Drittlandtransfer in die USA auf Basis von SCCs.',
+      'Legal basis: Art. 6 (1) lit. f GDPR (legitimate interest in qualifying incoming contact inquiries). Third-country transfer to the USA based on SCCs.',
   },
   {
-    title: '3. KI-gestützte Antwort via Claude API',
+    number: '3',
+    title: 'AI-generated reply via Claude API',
     body: [
-      'Die angereicherten Daten werden an die Claude API von Anthropic, PBC (548 Market St, San Francisco, CA 94104, USA) übermittelt. Ein KI-Sprachmodell verfasst daraufhin eine personalisierte Antwort-E-Mail.',
-      'Es findet keine automatisierte Entscheidungsfindung im Sinne des Art. 22 DSGVO statt — die KI erstellt ausschließlich den Text der Antwort. Der Enrichment Score (eine intern berechnete Kennzahl 0–6 auf Basis der Vollständigkeit der Anreicherungsdaten) dient lediglich der Priorisierung eingehender Anfragen und hat keine rechtlichen oder vergleichbar erheblichen Auswirkungen auf dich.',
+      'The enriched data is transmitted to the Claude API operated by Anthropic, PBC (548 Market St, San Francisco, CA 94104, USA). An AI language model then drafts a personalised reply email.',
+      'There is no automated decision-making within the meaning of Art. 22 GDPR — the AI only generates the text of the reply. The Enrichment Score (an internally calculated metric from 0–6 based on the completeness of the enrichment data) is used solely to prioritise incoming inquiries and has no legal or similarly significant effect on you.',
     ],
-    legal: 'Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO. Drittlandtransfer in die USA auf Basis von SCCs.',
+    legal:
+      'Legal basis: Art. 6 (1) lit. f GDPR. Third-country transfer to the USA based on SCCs.',
   },
   {
-    title: '4. Speicherung in HubSpot CRM',
+    number: '4',
+    title: 'Storage in HubSpot CRM',
     body: [
-      'Deine Kontaktdaten werden in HubSpot (HubSpot, Inc., 25 First Street, Cambridge, MA 02141, USA) gespeichert, um die Kommunikation zu verwalten.',
+      'Your contact data is stored in HubSpot (HubSpot, Inc., 25 First Street, Cambridge, MA 02141, USA) to manage the communication.',
     ],
-    legal: 'Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO. Drittlandtransfer in die USA auf Basis von SCCs.',
+    legal:
+      'Legal basis: Art. 6 (1) lit. f GDPR. Third-country transfer to the USA based on SCCs.',
   },
   {
-    title: '5. Speicherung in BigQuery',
+    number: '5',
+    title: 'Storage in BigQuery',
     body: [
-      'Strukturierte Kontaktdaten werden in Google BigQuery (Google Ireland Ltd., Gordon House, Barrow Street, Dublin 4, Irland) im EU-Rechenzentrum europe-west3 (Frankfurt) gespeichert.',
+      'Structured contact data is stored in Google BigQuery (Google Ireland Ltd., Gordon House, Barrow Street, Dublin 4, Ireland) in the EU region europe-west3 (Frankfurt).',
     ],
-    legal: 'Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO.',
+    legal: 'Legal basis: Art. 6 (1) lit. f GDPR.',
   },
 ]
 
 const rights: { head: string; body: string }[] = [
-  { head: 'Auskunft (Art. 15)', body: 'Du kannst Auskunft über die von mir verarbeiteten personenbezogenen Daten verlangen.' },
-  { head: 'Berichtigung (Art. 16)', body: 'Du hast das Recht, unrichtige Daten berichtigen zu lassen.' },
-  { head: 'Löschung (Art. 17)', body: 'Du kannst die Löschung deiner Daten verlangen, soweit keine gesetzlichen Aufbewahrungspflichten entgegenstehen.' },
-  { head: 'Einschränkung der Verarbeitung (Art. 18)', body: 'Du kannst die Einschränkung der Verarbeitung verlangen.' },
-  { head: 'Datenübertragbarkeit (Art. 20)', body: 'Du hast das Recht, deine Daten in einem gängigen Format zu erhalten.' },
-  { head: 'Widerspruch (Art. 21)', body: 'Du kannst der Verarbeitung auf Basis berechtigter Interessen jederzeit widersprechen.' },
-  { head: 'Widerruf der Einwilligung (Art. 7 Abs. 3)', body: 'Einwilligungen (z. B. für Cookies) kannst du jederzeit über den Cookie-Banner widerrufen.' },
+  {
+    head: 'Right to information (Art. 15)',
+    body: 'You can request information about the personal data I process about you.',
+  },
+  {
+    head: 'Right to rectification (Art. 16)',
+    body: 'You have the right to have inaccurate data corrected.',
+  },
+  {
+    head: 'Right to erasure (Art. 17)',
+    body: 'You can request the deletion of your data, unless statutory retention obligations apply.',
+  },
+  {
+    head: 'Right to restriction of processing (Art. 18)',
+    body: 'You can request that the processing of your data be restricted.',
+  },
+  {
+    head: 'Right to data portability (Art. 20)',
+    body: 'You have the right to receive your data in a common, machine-readable format.',
+  },
+  {
+    head: 'Right to object (Art. 21)',
+    body: 'You can object to processing based on legitimate interests at any time.',
+  },
+  {
+    head: 'Right to withdraw consent (Art. 7 (3))',
+    body: 'You can withdraw your consent (e.g. for cookies) at any time via the cookie banner.',
+  },
 ]
 
-const storageRows: { kind: string; tool: string; duration: string; deletion: string }[] = [
-  { kind: 'Website-Events (anonymisiert)', tool: 'GA4',       duration: '14 Monate',         deletion: 'Automatisch' },
-  { kind: 'CRM-Kontaktdaten',              tool: 'HubSpot',   duration: 'Bis Löschanfrage',  deletion: 'Auf Anfrage' },
-  { kind: 'Strukturierte Kontaktdaten',    tool: 'BigQuery',  duration: '24 Monate',         deletion: 'Auf Anfrage' },
-  { kind: 'Cookie-Einwilligung',           tool: 'CookieYes', duration: '12 Monate',         deletion: 'Bei Widerruf' },
-  { kind: 'Server-Logs',                   tool: 'Vercel',    duration: '30 Tage',           deletion: 'Automatisch' },
+const storageRows: {
+  kind: string
+  tool: string
+  duration: string
+  deletion: string
+}[] = [
+  {
+    kind: 'Website events (anonymised)',
+    tool: 'GA4',
+    duration: '14 months',
+    deletion: 'Automatic',
+  },
+  {
+    kind: 'CRM contact data',
+    tool: 'HubSpot',
+    duration: 'Until deletion request',
+    deletion: 'On request',
+  },
+  {
+    kind: 'Structured contact data',
+    tool: 'BigQuery',
+    duration: '24 months',
+    deletion: 'On request',
+  },
+  {
+    kind: 'Cookie consent',
+    tool: 'CookieYes',
+    duration: '12 months',
+    deletion: 'On withdrawal',
+  },
+  {
+    kind: 'Server logs',
+    tool: 'Vercel',
+    duration: '30 days',
+    deletion: 'Automatic',
+  },
 ]
 
 const sccProviders: string[] = [
   'Vercel Inc. (Hosting)',
   'RudderStack Inc. (Event Tracking)',
   'HubSpot, Inc. (CRM)',
-  'Clay Labs Inc. (Datenanreicherung)',
-  'Calendly Inc. (Terminbuchung)',
-  'Anthropic, PBC (KI-Sprachmodell)',
+  'Clay Labs Inc. (Data enrichment)',
+  'Calendly Inc. (Appointment booking)',
+  'Anthropic, PBC (AI language model)',
   'Google Analytics 4 / Google LLC (Analytics)',
 ]
 
@@ -286,50 +345,56 @@ export default function DatenschutzPage() {
 
       <article style={{ maxWidth: '800px', margin: '0 auto', padding: '160px 40px 96px' }}>
         <div style={sectionLabel}>Legal</div>
-        <h1 style={h1}>Datenschutzerklärung</h1>
-        <div style={subTitle}>Zuletzt aktualisiert: Mai 2026</div>
+        <h1 style={h1}>Privacy Policy</h1>
+        <div style={subTitle}>Last updated: May 2026</div>
 
         <section style={sectionWrap}>
-          <h2 style={h2}>1. Verantwortlicher</h2>
+          <h2 style={h2}>1. Data Controller</h2>
           <p style={p}>
             Julian Jais
             <br />
-            [STRASSE UND HAUSNUMMER]
+            Städtelner Straße 21
             <br />
             04416 Markkleeberg
             <br />
-            Deutschland
+            Germany
             <br />
-            E-Mail: julian.u.jais@gmail.com
+            Email: julian.u.jais@gmail.com
           </p>
         </section>
 
         <section style={sectionWrap}>
-          <h2 style={h2}>2. Überblick der Datenverarbeitung</h2>
+          <h2 style={h2}>2. Overview of Data Processing</h2>
           <p style={p}>
-            Auf dieser Website werden personenbezogene Daten verarbeitet, wenn du das Kontaktformular ausfüllst, einen Termin über den Kalender buchst oder die Website besuchst. Im Folgenden informiere ich dich darüber, welche Daten zu welchem Zweck verarbeitet werden und welche Rechte du hast.
+            This website processes personal data when you fill out the contact form, book a meeting via the embedded calendar, or simply browse the site. The sections below explain which data is processed, for which purpose, and what rights you have.
           </p>
         </section>
 
         <section style={sectionWrap}>
-          <h2 style={h2}>3. Hosting &amp; technischer Betrieb</h2>
+          <h2 style={h2}>3. Hosting &amp; Technical Operation</h2>
 
           <h3 style={h3}>Vercel (Hosting)</h3>
           <p style={p}>
-            Diese Website wird über Vercel Inc., 340 Pine Street, Suite 900, San Francisco, CA 94104, USA gehostet. Beim Aufruf der Website werden automatisch technische Daten (IP-Adresse, Browser, Zeitstempel) in Vercel-Zugriffsprotokollen verarbeitet. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse am sicheren Betrieb der Website). Drittlandtransfer in die USA auf Basis von Standardvertragsklauseln (SCCs) gemäß Art. 46 Abs. 2 lit. c DSGVO.
+            This website is hosted by Vercel Inc., 340 Pine Street, Suite 900, San Francisco, CA 94104, USA. When the website is accessed, technical data (IP address, browser, timestamp) is automatically processed in Vercel access logs. Legal basis: Art. 6 (1) lit. f GDPR (legitimate interest in the secure operation of the website). Third-country transfer to the USA based on Standard Contractual Clauses (SCCs) pursuant to Art. 46 (2) lit. c GDPR.
           </p>
 
-          <h3 style={h3}>n8n (Automatisierung)</h3>
+          <h3 style={h3}>n8n (Automation)</h3>
           <p style={p}>
-            Die Automatisierungsworkflows laufen auf einem selbst gehosteten Server bei Hostinger UAB, Schwedenkai 1, 24103 Kiel, Deutschland (EU-Rechenzentrum). Eingehende Formulardaten werden hier verarbeitet und weitergeleitet.
+            The automation workflows run on a self-hosted server at Hostinger UAB, Schwedenkai 1, 24103 Kiel, Germany (EU data center). Incoming form data is processed and forwarded from here.
           </p>
         </section>
 
         <section style={sectionWrap}>
-          <h2 style={h2}>4. Kontaktformular</h2>
-          <p style={p}>Wenn du das Kontaktformular ausfüllst, verarbeite ich folgende Daten:</p>
+          <h2 style={h2}>4. Contact Form</h2>
+          <p style={p}>When you fill out the contact form, the following data is processed:</p>
           <ul style={ul}>
-            {['Vorname, Nachname', 'E-Mail-Adresse (beruflich)', 'Unternehmen', 'Gesuchte Rolle', 'Nachricht (optional)'].map((item) => (
+            {[
+              'First name, last name',
+              'Email address (business)',
+              'Company',
+              'Role being filled',
+              'Message (optional)',
+            ].map((item) => (
               <li key={item} style={li}>
                 <span style={liDot} aria-hidden>›</span>
                 {item}
@@ -337,20 +402,20 @@ export default function DatenschutzPage() {
             ))}
           </ul>
           <p style={{ ...p, marginTop: '14px' }}>
-            Zweck: Bearbeitung deiner Anfrage und Kontaktaufnahme. Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO (vorvertragliche Maßnahmen) sowie Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Beantwortung von Anfragen).
+            Purpose: handling your inquiry and getting back to you. Legal basis: Art. 6 (1) lit. b GDPR (pre-contractual measures) and Art. 6 (1) lit. f GDPR (legitimate interest in responding to inquiries).
           </p>
 
-          <h3 style={h3}>Automatisierte Weiterverarbeitung nach Formularabgabe</h3>
-          <p style={p}>Nach Abgabe des Formulars durchläuft deine Anfrage automatisiert folgende Schritte:</p>
+          <h3 style={h3}>Automated further processing after form submission</h3>
+          <p style={p}>After submission, your inquiry runs through the following automated steps:</p>
 
           <ol style={stepList}>
             {automationSteps.map((step) => (
-              <li key={step.title} style={{ display: 'flex', alignItems: 'flex-start', gap: '14px' }}>
+              <li key={step.number} style={{ display: 'flex', alignItems: 'flex-start', gap: '14px' }}>
                 <span aria-hidden style={stepNumber}>
-                  {step.title.slice(0, 1)}
+                  {step.number}
                 </span>
                 <div style={stepBody}>
-                  <div style={stepTitle}>{step.title.replace(/^\d+\.\s*/, '')}</div>
+                  <div style={stepTitle}>{step.title}</div>
                   {step.body.map((para, i) => (
                     <p key={i} style={stepText}>{para}</p>
                   ))}
@@ -362,18 +427,18 @@ export default function DatenschutzPage() {
         </section>
 
         <section style={sectionWrap}>
-          <h2 style={h2}>5. Terminbuchung via Calendly</h2>
+          <h2 style={h2}>5. Appointment Booking via Calendly</h2>
           <p style={p}>
-            Wenn du über das eingebettete Kalender-Widget einen Termin buchst, verarbeitest du deine Daten direkt bei Calendly Inc., 271 17th St NW, Atlanta, GA 30363, USA.
+            If you book a meeting via the embedded calendar widget, your data is processed directly by Calendly Inc., 271 17th St NW, Atlanta, GA 30363, USA.
           </p>
           <p style={p}>
-            Verarbeitete Daten: Name, E-Mail-Adresse, gewählter Termin. Zweck: Koordination und Bestätigung des Gesprächstermins. Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO. Drittlandtransfer in die USA auf Basis von SCCs.
+            Data processed: name, email address, selected appointment slot. Purpose: coordinating and confirming the meeting. Legal basis: Art. 6 (1) lit. b GDPR. Third-country transfer to the USA based on SCCs.
           </p>
           <p style={p}>
-            Nach einer Buchung wird dein Termin über n8n abgerufen und eine Briefing-E-Mail automatisch vorbereitet (siehe Abschnitt 4, Schritte 1–3).
+            After booking, your appointment is retrieved via n8n and a briefing email is automatically prepared (see Section 4, Steps 1–3).
           </p>
           <p style={p}>
-            Datenschutzerklärung von Calendly:{' '}
+            Calendly&rsquo;s privacy policy:{' '}
             <a
               href="https://calendly.com/privacy"
               target="_blank"
@@ -386,25 +451,29 @@ export default function DatenschutzPage() {
         </section>
 
         <section style={sectionWrap}>
-          <h2 style={h2}>6. Website-Tracking &amp; Cookies</h2>
+          <h2 style={h2}>6. Website Tracking &amp; Cookies</h2>
 
-          <h3 style={h3}>Cookie-Einwilligung (CookieYes)</h3>
+          <h3 style={h3}>Cookie consent (CookieYes)</h3>
           <p style={p}>
-            Das Cookie-Consent-Management erfolgt über CookieYes (Digital Compliance House Ltd., 483 Green Lanes, London, N13 4BS, UK). Deine Einwilligungsentscheidung wird in einem Cookie gespeichert. Rechtsgrundlage: Art. 6 Abs. 1 lit. c DSGVO (rechtliche Verpflichtung zur Einholung von Einwilligungen).
+            Cookie consent management is provided by CookieYes (Digital Compliance House Ltd., 483 Green Lanes, London, N13 4BS, UK). Your consent decision is stored in a cookie. Legal basis: Art. 6 (1) lit. c GDPR (legal obligation to obtain consent).
           </p>
 
           <h3 style={h3}>Google Tag Manager</h3>
           <p style={p}>
-            Google Tag Manager (Google Ireland Ltd.) wird ausschließlich zur Verwaltung von Tags verwendet. GTM setzt selbst keine Analytics-Cookies und überträgt keine personenbezogenen Daten. Es wird nur bei vorliegender Einwilligung aktiviert.
+            Google Tag Manager (Google Ireland Ltd.) is used exclusively for tag management. GTM itself does not set analytics cookies and does not transmit personal data. It is activated only with prior consent.
           </p>
 
-          <h3 style={h3}>RudderStack (Event Tracking) — nur mit Einwilligung</h3>
+          <h3 style={h3}>RudderStack (Event Tracking) — only with consent</h3>
           <p style={p}>
-            Mit deiner Einwilligung (Analytics-Kategorie) wird das RudderStack JavaScript SDK geladen. Es erfasst Nutzerinteraktionen wie Seitenaufrufe, Button-Klicks und Formularabgaben als anonymisierte Events.
+            With your consent (Analytics category), the RudderStack JavaScript SDK is loaded. It captures user interactions such as page views, button clicks and form submissions as anonymised events.
           </p>
-          <p style={p}>RudderStack leitet diese Events serverseitig weiter an:</p>
+          <p style={p}>RudderStack forwards these events server-side to:</p>
           <ul style={ul}>
-            {['Google Analytics 4 (zur Funnel-Analyse)', 'HubSpot (zur Kontakt-Identifikation)', 'Google BigQuery (zur Datenspeicherung)'].map((item) => (
+            {[
+              'Google Analytics 4 (for funnel analysis)',
+              'HubSpot (for contact identification)',
+              'Google BigQuery (for data storage)',
+            ].map((item) => (
               <li key={item} style={li}>
                 <span style={liDot} aria-hidden>›</span>
                 {item}
@@ -412,41 +481,41 @@ export default function DatenschutzPage() {
             ))}
           </ul>
           <p style={{ ...p, marginTop: '14px' }}>
-            Da RudderStack die GA4-Daten serverseitig übermittelt, werden keine Google Analytics-Cookies im Browser gesetzt.
+            Because RudderStack transmits GA4 data server-side, no Google Analytics cookies are set in the browser.
           </p>
           <p style={p}>
-            Anbieter: RudderStack Inc., 685 Market Street, Suite 500, San Francisco, CA 94105, USA. Drittlandtransfer in die USA auf Basis von SCCs. Rechtsgrundlage: Art. 6 Abs. 1 lit. a DSGVO (Einwilligung).
+            Provider: RudderStack Inc., 685 Market Street, Suite 500, San Francisco, CA 94105, USA. Third-country transfer to the USA based on SCCs. Legal basis: Art. 6 (1) lit. a GDPR (consent).
           </p>
 
-          <h3 style={h3}>HubSpot Tracking Pixel — nur mit Einwilligung</h3>
+          <h3 style={h3}>HubSpot Tracking Pixel — only with consent</h3>
           <p style={p}>
-            Mit deiner Einwilligung (Marketing-Kategorie) wird das HubSpot-Tracking-Pixel geladen. Es erkennt wiederkehrende Besucher und verknüpft Website-Aktivitäten mit CRM-Kontaktdatensätzen. Anbieter: HubSpot, Inc., 25 First Street, Cambridge, MA 02141, USA. Drittlandtransfer in die USA auf Basis von SCCs. Rechtsgrundlage: Art. 6 Abs. 1 lit. a DSGVO (Einwilligung).
+            With your consent (Marketing category), the HubSpot tracking pixel is loaded. It recognises returning visitors and links website activity to CRM contact records. Provider: HubSpot, Inc., 25 First Street, Cambridge, MA 02141, USA. Third-country transfer to the USA based on SCCs. Legal basis: Art. 6 (1) lit. a GDPR (consent).
           </p>
         </section>
 
         <section style={sectionWrap}>
           <h2 style={h2}>7. Google Analytics 4 &amp; BigQuery</h2>
           <p style={p}>
-            Website-Events werden serverseitig über RudderStack an Google Analytics 4 übermittelt. Dabei werden keine personenbezogenen Daten direkt an Google übertragen — RudderStack sendet anonymisierte Event-Daten.
+            Website events are transmitted server-side via RudderStack to Google Analytics 4. No personal data is transferred directly to Google — RudderStack sends anonymised event data.
           </p>
           <p style={p}>
-            Tägliche Event-Exporte aus GA4 werden in Google BigQuery im EU-Rechenzentrum europe-west3 (Frankfurt) gespeichert und dienen der Analyse des Website-Funnels.
+            Daily event exports from GA4 are stored in Google BigQuery in the EU region europe-west3 (Frankfurt) and are used to analyse the website funnel.
           </p>
           <p style={p}>
-            Google Ireland Ltd., Gordon House, Barrow Street, Dublin 4, Irland. Rechtsgrundlage: Art. 6 Abs. 1 lit. a DSGVO (Einwilligung).
+            Google Ireland Ltd., Gordon House, Barrow Street, Dublin 4, Ireland. Legal basis: Art. 6 (1) lit. a GDPR (consent).
           </p>
         </section>
 
         <section style={sectionWrap}>
-          <h2 style={h2}>8. Speicherdauer</h2>
+          <h2 style={h2}>8. Storage Periods</h2>
           <div style={{ overflowX: 'auto' }}>
             <table style={table}>
               <thead>
                 <tr>
-                  <th style={th}>Datenkategorie</th>
+                  <th style={th}>Data category</th>
                   <th style={th}>Tool</th>
-                  <th style={th}>Speicherdauer</th>
-                  <th style={th}>Löschung</th>
+                  <th style={th}>Storage period</th>
+                  <th style={th}>Deletion</th>
                 </tr>
               </thead>
               <tbody>
@@ -464,8 +533,8 @@ export default function DatenschutzPage() {
         </section>
 
         <section style={sectionWrap}>
-          <h2 style={h2}>9. Deine Rechte</h2>
-          <p style={p}>Gemäß DSGVO stehen dir folgende Rechte zu:</p>
+          <h2 style={h2}>9. Your Rights</h2>
+          <p style={p}>Under the GDPR, you have the following rights:</p>
           <ul style={rightsList}>
             {rights.map((r) => (
               <li key={r.head} style={rightItem}>
@@ -476,7 +545,7 @@ export default function DatenschutzPage() {
             ))}
           </ul>
           <p style={p}>
-            Zur Ausübung deiner Rechte wende dich an:{' '}
+            To exercise your rights, contact:{' '}
             <a
               href="mailto:julian.u.jais@gmail.com"
               style={{ color: 'var(--brand)', textDecoration: 'underline', textUnderlineOffset: '3px' }}
@@ -487,12 +556,12 @@ export default function DatenschutzPage() {
         </section>
 
         <section style={sectionWrap}>
-          <h2 style={h2}>10. Beschwerderecht</h2>
+          <h2 style={h2}>10. Right to Lodge a Complaint</h2>
           <p style={p}>
-            Du hast das Recht, dich bei einer Aufsichtsbehörde zu beschweren. Die zuständige Behörde für Sachsen ist:
+            You have the right to lodge a complaint with a supervisory authority. The competent authority for Saxony is:
           </p>
           <p style={p}>
-            Der Sächsische Datenschutz- und Transparenzbeauftragte
+            The Saxon Data Protection and Transparency Commissioner
             <br />
             Devrientstraße 5
             <br />
@@ -510,11 +579,11 @@ export default function DatenschutzPage() {
         </section>
 
         <section style={sectionWrap}>
-          <h2 style={h2}>11. Drittlandtransfers</h2>
+          <h2 style={h2}>11. Third-Country Transfers</h2>
           <p style={p}>
-            Mehrere eingesetzte Tools übermitteln Daten in die USA. Diese Transfers erfolgen auf Basis von Standardvertragsklauseln (SCCs) gemäß Art. 46 Abs. 2 lit. c DSGVO, die die Europäische Kommission als angemessene Schutzgarantie anerkannt hat.
+            Several tools used here transfer data to the United States. These transfers are based on Standard Contractual Clauses (SCCs) pursuant to Art. 46 (2) lit. c GDPR, which the European Commission has recognised as an adequate safeguard.
           </p>
-          <p style={p}>Betroffene Anbieter:</p>
+          <p style={p}>Providers concerned:</p>
           <ul style={ul}>
             {sccProviders.map((item) => (
               <li key={item} style={li}>
@@ -526,9 +595,9 @@ export default function DatenschutzPage() {
         </section>
 
         <section style={sectionWrap}>
-          <h2 style={h2}>12. Änderungen dieser Erklärung</h2>
+          <h2 style={h2}>12. Changes to this Policy</h2>
           <p style={p}>
-            Diese Datenschutzerklärung kann bei technischen Änderungen der Website oder bei Änderungen der Rechtslage angepasst werden. Die jeweils aktuelle Version ist auf dieser Seite abrufbar. Das Datum der letzten Aktualisierung ist oben angegeben.
+            This privacy policy may be updated when the website changes technically or when the legal situation changes. The current version is always available on this page. The date of the last update is shown at the top.
           </p>
         </section>
       </article>
