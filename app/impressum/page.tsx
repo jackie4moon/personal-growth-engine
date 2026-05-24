@@ -3,8 +3,8 @@ import { Nav } from '@/components/nav'
 import { Footer } from '@/components/footer'
 
 export const metadata: Metadata = {
-  title: 'Impressum — Julian Jais',
-  description: 'Pflichtangaben gemäß § 5 TMG.',
+  title: 'Legal Notice — Julian Jais',
+  description: 'Mandatory information pursuant to § 5 TMG.',
   robots: 'noindex, nofollow',
 }
 
@@ -69,87 +69,63 @@ export default function ImpressumPage() {
         }}
       >
         <div style={sectionLabelStyle}>Legal</div>
-        <h1 style={h1Style}>Impressum</h1>
+        <h1 style={h1Style}>Legal Notice</h1>
 
         <section style={sectionWrap}>
-          <h2 style={h2Style}>Angaben gemäß § 5 TMG</h2>
+          <h2 style={h2Style}>Information pursuant to § 5 TMG</h2>
           <p style={pStyle}>
             Julian Jais
             <br />
-            Sädtelner Strasße 21
+            Städtelner Straße 21
             <br />
             04416 Markkleeberg
             <br />
-            Deutschland
+            Germany
           </p>
         </section>
 
         <section style={sectionWrap}>
-          <h2 style={h2Style}>Kontakt</h2>
-          <p style={pStyle}>E-Mail: julian.u.jais@gmail.com</p>
+          <h2 style={h2Style}>Contact</h2>
+          <p style={pStyle}>Email: julian.u.jais@gmail.com</p>
         </section>
 
         <section style={sectionWrap}>
-          <h2 style={h2Style}>Hinweis zur Website</h2>
+          <h2 style={h2Style}>About this Website</h2>
           <p style={pStyle}>
-            Diese Website dient ausschließlich der persönlichen Präsentation im
-            Rahmen einer Bewerbung. Sie wird nicht kommerziell betrieben und
-            enthält keine entgeltlichen Angebote.
-          </p>
-        </section>
-
-        <section style={sectionWrap}>
-          <h2 style={h2Style}>Haftung für Inhalte</h2>
-          <p style={pStyle}>
-            Als Diensteanbieter bin ich gemäß § 7 Abs. 1 TMG für eigene Inhalte
-            auf dieser Website nach den allgemeinen Gesetzen verantwortlich.
-            Nach §§ 8 bis 10 TMG bin ich als Diensteanbieter jedoch nicht
-            verpflichtet, übermittelte oder gespeicherte fremde Informationen
-            zu überwachen oder nach Umständen zu forschen, die auf eine
-            rechtswidrige Tätigkeit hinweisen.
-          </p>
-          <p style={pStyle}>
-            Verpflichtungen zur Entfernung oder Sperrung der Nutzung von
-            Informationen nach den allgemeinen Gesetzen bleiben hiervon
-            unberührt. Eine diesbezügliche Haftung ist jedoch erst ab dem
-            Zeitpunkt der Kenntnis einer konkreten Rechtsverletzung möglich.
-            Bei Bekanntwerden von entsprechenden Rechtsverletzungen werde ich
-            diese Inhalte umgehend entfernen.
+            This website serves exclusively as a personal portfolio in the
+            context of job applications. It is not operated commercially and
+            does not contain any paid offers.
           </p>
         </section>
 
         <section style={sectionWrap}>
-          <h2 style={h2Style}>Haftung für Links</h2>
+          <h2 style={h2Style}>Liability for Content</h2>
           <p style={pStyle}>
-            Diese Website enthält Links zu externen Websites Dritter, auf deren
-            Inhalte ich keinen Einfluss habe. Deshalb kann ich für diese
-            fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der
-            verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber
-            der Seiten verantwortlich.
+            As a service provider, I am responsible for my own content on this
+            website in accordance with § 7 (1) TMG under general laws. However,
+            pursuant to §§ 8 to 10 TMG, I am not obligated as a service
+            provider to monitor third-party information transmitted or stored,
+            or to investigate circumstances that indicate illegal activity.
+          </p>
+          <p style={pStyle}>
+            Obligations to remove or block the use of information under general
+            laws remain unaffected by this. However, liability in this regard
+            is only possible from the point at which a specific legal
+            violation becomes known. Upon becoming aware of corresponding
+            legal violations, I will remove this content immediately.
           </p>
         </section>
 
-        {/* Placeholder warning box */}
-        <aside
-          style={{
-            marginTop: '48px',
-            background: 'var(--bg-subtle)',
-            borderLeft: '3px solid var(--brand)',
-            borderRadius: '8px',
-            padding: '20px 24px',
-            fontFamily: 'var(--font-body)',
-            fontSize: '14px',
-            color: 'var(--fg-2)',
-            lineHeight: 1.6,
-          }}
-        >
-          <span aria-hidden style={{ marginRight: '8px' }}>
-            ⚠️
-          </span>
-          <strong style={{ color: 'var(--fg)' }}>Platzhalter:</strong> Bitte
-          trage vor dem Go-Live deine vollständige Straße und Hausnummer ein.
-          Das Impressum ist ohne vollständige Anschrift nicht rechtssicher.
-        </aside>
+        <section style={sectionWrap}>
+          <h2 style={h2Style}>Liability for Links</h2>
+          <p style={pStyle}>
+            This website contains links to external third-party websites whose
+            content I have no influence over. Therefore, I cannot assume any
+            liability for this external content. The respective provider or
+            operator of the pages is always responsible for the content of the
+            linked pages.
+          </p>
+        </section>
       </article>
 
       <Footer />
