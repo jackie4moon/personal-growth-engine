@@ -174,7 +174,7 @@ export default function DemoPage() {
               fontWeight: 500,
               padding: '11px 22px',
               borderRadius: '8px',
-              border: '1px solid var(--border)',
+              border: '1px solid oklch(34% 0 0)',
               textDecoration: 'none',
               display: 'inline-flex',
               alignItems: 'center',

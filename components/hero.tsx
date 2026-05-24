@@ -127,7 +127,7 @@ export function Hero() {
                 fontWeight: 500,
                 padding: '11px 22px',
                 borderRadius: '8px',
-                border: '1px solid var(--border)',
+                border: '1px solid oklch(34% 0 0)',
                 cursor: 'pointer',
                 textDecoration: 'none',
                 display: 'inline-flex',
@@ -136,12 +136,12 @@ export function Hero() {
                 transition: 'border-color 120ms var(--ease), background 120ms, color 120ms',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = 'var(--border-hover)'
+                e.currentTarget.style.borderColor = 'oklch(48% 0 0)'
                 e.currentTarget.style.background = 'var(--bg-subtle)'
                 e.currentTarget.style.color = 'var(--fg)'
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'var(--border)'
+                e.currentTarget.style.borderColor = 'oklch(34% 0 0)'
                 e.currentTarget.style.background = 'transparent'
                 e.currentTarget.style.color = 'var(--fg-2)'
               }}
