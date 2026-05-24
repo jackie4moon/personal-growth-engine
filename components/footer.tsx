@@ -45,6 +45,8 @@ export function Footer() {
           { href: '/demo', label: 'GTM Demo' },
           { href: 'https://linkedin.com/in/julianjais', label: 'LinkedIn' },
           { href: 'mailto:julian.u.jais@gmail.com', label: 'Email' },
+          { href: '/impressum', label: 'Impressum' },
+          { href: '/datenschutz', label: 'Datenschutz' },
         ].map((l) => (
           <a
             key={l.label}
