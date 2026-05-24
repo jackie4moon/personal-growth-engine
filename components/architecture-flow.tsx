@@ -13,7 +13,12 @@ type NodeData = {
   tooltip: string
 }
 
-type EdgeData = { from: string; to: string }
+type EdgeData = {
+  from: string
+  to: string
+  /** Short descriptor of what travels along this edge — used for mobile chip text. */
+  flow?: string
+}
 
 const NODE_W = 170
 const NODE_H = 76
@@ -45,7 +50,7 @@ const NODES: NodeData[] = [
       'New meetings are not pushed via webhook — n8n polls the Calendly API every 60 minutes and processes any new booking it finds.',
   },
 
-  // Layer 2 — Capture Layer
+  // Layer 2 — Capture
   {
     id: 'C',
     label: 'GTM Container',
@@ -69,7 +74,7 @@ const NODES: NodeData[] = [
       'The actual CDP — RudderStack JS SDK lazy-loads after CookieYes consent. Every track() call fans out server-side to GA4, HubSpot and any future destination in one place.',
   },
 
-  // Layer 3 — Immediate destinations from capture
+  // Layer 3 — Direct destinations from capture
   {
     id: 'E',
     label: 'GA4',
@@ -90,10 +95,10 @@ const NODES: NodeData[] = [
     y: 260,
     highlight: false,
     tooltip:
-      'Two upstream sources hit the same contact record: RudderStack identify() on form submission, and n8n batch upsert after Clay enrichment completes.',
+      'Three upstream sources hit the same contact record: GTM HubSpot Pixel, RudderStack identify() on form submission, and n8n batch upsert after Clay enrichment.',
   },
 
-  // Layer 4 — Pipeline (enrichment + orchestration)
+  // Layer 4 — Pipeline
   {
     id: 'G',
     label: 'Clay',
@@ -167,29 +172,40 @@ const NODES: NodeData[] = [
 ]
 
 const EDGES: EdgeData[] = [
-  // Website loads tag manager + CDP
-  { from: 'A', to: 'C' },
-  { from: 'A', to: 'D' },
-  // Form data takes the Next.js proxy → Clay direct
-  { from: 'A', to: 'G' },
-  // n8n polls Calendly
-  { from: 'B', to: 'H' },
-  // GTM forwards HubSpot pixel events
-  { from: 'C', to: 'F' },
-  // RudderStack fan-out
-  { from: 'D', to: 'E' },
-  { from: 'D', to: 'F' },
-  // GA4 native daily export
-  { from: 'E', to: 'J' },
-  // Clay → n8n Relay
-  { from: 'G', to: 'H' },
-  // n8n Relay fans out
-  { from: 'H', to: 'F' },
-  { from: 'H', to: 'I' },
-  { from: 'H', to: 'J' },
-  // Final outputs
-  { from: 'I', to: 'K' },
-  { from: 'J', to: 'L' },
+  { from: 'A', to: 'C', flow: 'tag manager load' },
+  { from: 'A', to: 'D', flow: 'CDP SDK load' },
+  { from: 'A', to: 'G', flow: 'form data via /api/n8n' },
+  { from: 'B', to: 'H', flow: 'polled hourly' },
+  { from: 'C', to: 'F', flow: 'HubSpot Pixel' },
+  { from: 'D', to: 'E', flow: 'track events' },
+  { from: 'D', to: 'F', flow: 'identify()' },
+  { from: 'E', to: 'J', flow: 'GA4 Daily Export' },
+  { from: 'G', to: 'H', flow: 'enriched payload' },
+  { from: 'H', to: 'F', flow: 'batch upsert' },
+  { from: 'H', to: 'I', flow: 'AI prompt' },
+  { from: 'H', to: 'J', flow: 'HTTP REST insert' },
+  { from: 'I', to: 'K', flow: 'send reply' },
+  { from: 'J', to: 'L', flow: 'BI dashboard' },
+]
+
+// Mobile: 2-column grid pairs (mirrors desktop layer rows)
+const MOBILE_PAIRS: [string, string][] = [
+  ['A', 'B'],
+  ['C', 'D'],
+  ['E', 'F'],
+  ['G', 'H'],
+  ['I', 'J'],
+  ['K', 'L'],
+]
+
+// Layer labels used on mobile in place of misleading `↓` arrows
+const LAYER_LABELS = [
+  '01 · Entry',
+  '02 · Capture',
+  '03 · Realtime fan-out',
+  '04 · Async pipeline',
+  '05 · AI + Warehouse',
+  '06 · Output',
 ]
 
 function nodeAnchor(
@@ -214,29 +230,17 @@ function pickEndpoints(
   from: NodeData,
   to: NodeData
 ): { p1: { x: number; y: number }; p2: { x: number; y: number } } {
-  // Same row → horizontal
   if (from.y === to.y) {
     if (from.x < to.x) {
       return { p1: nodeAnchor(from, 'right'), p2: nodeAnchor(to, 'left') }
     }
     return { p1: nodeAnchor(from, 'left'), p2: nodeAnchor(to, 'right') }
   }
-  // Otherwise bottom-of-higher → top-of-lower (or reverse for backward edges)
   return {
     p1: nodeAnchor(from, from.y < to.y ? 'bottom' : 'top'),
     p2: nodeAnchor(to, from.y < to.y ? 'top' : 'bottom'),
   }
 }
-
-// Pair nodes for mobile 2-col grid (mirrors desktop layer rows)
-const MOBILE_PAIRS: [string, string][] = [
-  ['A', 'B'],
-  ['C', 'D'],
-  ['E', 'F'],
-  ['G', 'H'],
-  ['I', 'J'],
-  ['K', 'L'],
-]
 
 export function ArchitectureFlow() {
   const [hoveredId, setHoveredId] = useState<string | null>(null)
@@ -251,7 +255,18 @@ export function ArchitectureFlow() {
   const isEdgeActive = (e: EdgeData) =>
     hoveredId !== null && (e.from === hoveredId || e.to === hoveredId)
 
-  // Tooltip placement — left or right of node, whichever fits the canvas
+  // Per-node outgoing/incoming edge lookup, computed once per render
+  const outgoingByNode: Record<string, EdgeData[]> = {}
+  const incomingByNode: Record<string, EdgeData[]> = {}
+  for (const n of NODES) {
+    outgoingByNode[n.id] = []
+    incomingByNode[n.id] = []
+  }
+  for (const e of EDGES) {
+    outgoingByNode[e.from]?.push(e)
+    incomingByNode[e.to]?.push(e)
+  }
+
   const tooltipPos = hoveredNode
     ? (() => {
         const tooltipW = 260
@@ -260,10 +275,7 @@ export function ArchitectureFlow() {
           left: fitsRight
             ? hoveredNode.x + NODE_W + 14
             : Math.max(hoveredNode.x - tooltipW - 14, 8),
-          top: Math.min(
-            Math.max(hoveredNode.y - 6, 8),
-            CANVAS_H - 140
-          ),
+          top: Math.min(Math.max(hoveredNode.y - 6, 8), CANVAS_H - 140),
         }
       })()
     : null
@@ -446,10 +458,49 @@ export function ArchitectureFlow() {
         </div>
       </div>
 
-      {/* MOBILE — 2-column grid of pairs */}
+      {/* MOBILE — labelled layers + per-card flow chips */}
       <div className="arch-mobile" style={{ display: 'none' }}>
         {MOBILE_PAIRS.map((pair, rowIdx) => (
-          <div key={`row-${rowIdx}`}>
+          <section
+            key={`layer-${rowIdx}`}
+            style={{ marginBottom: rowIdx === MOBILE_PAIRS.length - 1 ? 0 : 22 }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 10,
+                fontFamily: 'var(--font-mono), JetBrains Mono, monospace',
+                fontSize: 10.5,
+                color: 'var(--brand)',
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                marginBottom: 10,
+              }}
+            >
+              <span
+                aria-hidden
+                style={{
+                  width: 4,
+                  height: 4,
+                  borderRadius: '50%',
+                  background: 'var(--brand)',
+                  boxShadow: '0 0 6px var(--brand)',
+                  flexShrink: 0,
+                }}
+              />
+              {LAYER_LABELS[rowIdx]}
+              <span
+                aria-hidden
+                style={{
+                  flex: 1,
+                  height: 1,
+                  background: 'var(--border)',
+                  marginLeft: 4,
+                }}
+              />
+            </div>
+
             <div
               style={{
                 display: 'grid',
@@ -459,6 +510,12 @@ export function ArchitectureFlow() {
             >
               {pair.map((id) => {
                 const n = nodeById[id]
+                const outgoing = outgoingByNode[id] || []
+                const incoming = incomingByNode[id] || []
+                const hasOutgoing = outgoing.length > 0
+                const chips = hasOutgoing ? outgoing : incoming
+                const direction: 'out' | 'in' = hasOutgoing ? 'out' : 'in'
+
                 return (
                   <div
                     key={id}
@@ -471,7 +528,7 @@ export function ArchitectureFlow() {
                       padding: '12px 12px',
                       display: 'flex',
                       flexDirection: 'column',
-                      gap: 6,
+                      gap: 8,
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -506,33 +563,90 @@ export function ArchitectureFlow() {
                         fontSize: 11.5,
                         color: 'var(--fg-2)',
                         lineHeight: 1.5,
-                        marginTop: 2,
                       }}
                     >
                       {n.tooltip}
                     </div>
+
+                    {chips.length > 0 && (
+                      <div
+                        style={{
+                          marginTop: 4,
+                          paddingTop: 8,
+                          borderTop: '1px dashed var(--border)',
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontFamily: 'var(--font-mono), JetBrains Mono, monospace',
+                            fontSize: 9.5,
+                            color: 'var(--fg-3)',
+                            letterSpacing: '0.08em',
+                            textTransform: 'uppercase',
+                            marginBottom: 6,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 4,
+                          }}
+                        >
+                          {direction === 'out' ? (
+                            <>
+                              Flows to <span aria-hidden style={{ color: 'var(--brand)' }}>→</span>
+                            </>
+                          ) : (
+                            <>
+                              <span aria-hidden style={{ color: 'var(--brand)' }}>←</span> Receives from
+                            </>
+                          )}
+                        </div>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
+                          {chips.map((e) => {
+                            const otherId = direction === 'out' ? e.to : e.from
+                            const other = nodeById[otherId]
+                            return (
+                              <span
+                                key={`${e.from}-${e.to}`}
+                                style={{
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: 4,
+                                  background: 'var(--bg-subtle)',
+                                  border: '1px solid var(--border)',
+                                  borderRadius: 99,
+                                  padding: '3px 8px',
+                                  fontSize: 10.5,
+                                  color: 'var(--fg-2)',
+                                  fontFamily:
+                                    'var(--font-mono), JetBrains Mono, monospace',
+                                  letterSpacing: '0.01em',
+                                  lineHeight: 1.2,
+                                  whiteSpace: 'nowrap',
+                                }}
+                                title={e.flow ?? other.label}
+                              >
+                                <span aria-hidden style={{ fontSize: 11 }}>
+                                  {other.icon}
+                                </span>
+                                <span>
+                                  <span style={{ color: 'var(--fg)' }}>{other.label}</span>
+                                  {e.flow && (
+                                    <span style={{ color: 'var(--fg-3)' }}>
+                                      {' · '}
+                                      {e.flow}
+                                    </span>
+                                  )}
+                                </span>
+                              </span>
+                            )
+                          })}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )
               })}
             </div>
-            {rowIdx < MOBILE_PAIRS.length - 1 && (
-              <div
-                aria-hidden
-                style={{
-                  height: 22,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'var(--brand)',
-                  fontFamily: 'var(--font-mono), monospace',
-                  fontSize: 18,
-                  lineHeight: 1,
-                }}
-              >
-                ↓
-              </div>
-            )}
-          </div>
+          </section>
         ))}
       </div>
 
