@@ -356,7 +356,18 @@ export function Contact() {
               </button>
 
               <p style={{ fontSize: '11.5px', color: 'var(--fg-3)', textAlign: 'center', marginTop: '-4px' }}>
-                {"You'll receive an AI-personalised reply within minutes — part of the automation running on this portfolio."}
+                Your data will be enriched and processed by AI to reply to you.{' '}
+                <span aria-hidden>·</span>{' '}
+                <a
+                  href="/datenschutz"
+                  style={{
+                    color: 'var(--fg-2)',
+                    textDecoration: 'underline',
+                    textUnderlineOffset: '2px',
+                  }}
+                >
+                  Privacy Policy
+                </a>
               </p>
             </form>
           ) : (
