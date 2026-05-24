@@ -23,6 +23,7 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://julianjais.com'),
   title: 'Julian Jais — GTM Engineer & Growth Operations',
   description:
     'Senior Growth Marketing & Operations professional specialising in AI-powered GTM systems, performance marketing, server-side tracking, and revenue analytics. Available for senior growth & ops roles.',
@@ -35,12 +36,35 @@ export const metadata: Metadata = {
     'Senior Marketing Manager',
   ],
   authors: [{ name: 'Julian Jais' }],
+  // Site is link-only — keep all routes out of search engines by default.
+  // Child pages inherit this unless they explicitly override `robots`.
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: { index: false, follow: false },
+  },
   openGraph: {
     title: 'Julian Jais — GTM Engineer & Growth Ops',
     description:
       'I build the systems that make marketing measurable, automated & scalable.',
     type: 'website',
     url: 'https://julianjais.com',
+    siteName: 'Julian Jais',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Julian Jais — GTM Engineer & Growth Ops',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Julian Jais — GTM Engineer & Growth Ops',
+    description:
+      'I build the systems that make marketing measurable, automated & scalable.',
+    images: ['/og-image.png'],
   },
 }
 
