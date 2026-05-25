@@ -436,7 +436,7 @@ export default function DemoPage() {
             }}
           >
             All architectural decisions, implementation challenges, workarounds, and
-            learnings from Phase 1–4. 6–8 pages. Built to show exactly how this
+            learnings from Phase 1–4. Built to show exactly how this
             system was designed.
           </p>
           <a

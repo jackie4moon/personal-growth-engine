@@ -87,8 +87,8 @@ export function BookSection() {
             flexShrink: 0,
           }}
         >
-          Pick a slot directly — no back-and-forth on email. I block time for
-          first conversations every Tuesday and Thursday morning.
+          Pick a slot directly — no back-and-forth on email.
+          Just find a time that works for you.
         </p>
       </div>
 

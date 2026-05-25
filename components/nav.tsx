@@ -49,7 +49,7 @@ export function Nav() {
       >
         {/* Logo */}
         <a
-          href="#hero"
+          href="https://julianjais.com"
           style={{
             fontFamily: 'var(--font-display), Space Grotesk, system-ui, sans-serif',
             fontSize: '17px',
