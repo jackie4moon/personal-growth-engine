@@ -105,9 +105,14 @@ export function BookSection() {
         style={{
           borderRadius: '12px',
           overflow: 'hidden',
-          filter: 'invert(1) hue-rotate(180deg)',
+          /* invert(1) flips white→near-black and dark-text→light-text.
+             Dropping hue-rotate means Calendly's blue accent inverts to
+             orange/amber — which aligns with the site's brand colour.
+             brightness(0.88) pulls the result from harsh pure-black to the
+             site's actual near-black bg (~#141414) and dims harsh light borders. */
+          filter: 'invert(1) brightness(0.88)',
           border: '1px solid oklch(28% 0 0)',
-          background: '#fff', /* white here becomes near-black after invert */
+          background: '#fff', /* renders as near-black after invert */
         }}
       >
         <CalendlyWidget />
