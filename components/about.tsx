@@ -55,11 +55,11 @@ export function About() {
               marginBottom: '16px',
             }}
           >
-            My work sits at the intersection of GTM architecture, marketing
-            technology, and AI automation. I design the systems that connect
-            marketing execution to measurable revenue outcomes — first-party
-            data pipelines, server-side tracking, AI-powered lead enrichment,
-            and attribution models that sales teams actually trust.
+            My work sits at the intersection of GTM architecture, performance
+            marketing, and AI automation. Not as separate disciplines, but as
+            one connected system: campaigns that generate demand, tracking
+            infrastructure that proves it, and automated pipelines that act on
+            it.
           </p>
           <p
             style={{
