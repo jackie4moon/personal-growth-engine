@@ -87,8 +87,14 @@ export function BookSection() {
             flexShrink: 0,
           }}
         >
-          Pick a slot directly — no back-and-forth on email.
-          Just find a time that works for you.
+          If you&apos;re looking to fill a senior individual contributor or
+          first-time leadership role in Growth Operations, GTM Architecture,
+          Performance Marketing or Head of Growth, I&apos;d love to connect.
+          Not to sell myself, but to have an honest conversation about whether
+          what I do actually matches what you need.
+          <br />
+          <br />
+          Pick a slot below and let&apos;s find out.
         </p>
       </div>
 
