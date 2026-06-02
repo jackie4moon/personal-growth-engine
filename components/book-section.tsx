@@ -107,6 +107,7 @@ export function BookSection() {
           overflow: 'hidden',
           filter: 'invert(1) hue-rotate(180deg)',
           border: '1px solid oklch(28% 0 0)',
+          background: '#fff', /* white here becomes near-black after invert */
         }}
       >
         <CalendlyWidget />
