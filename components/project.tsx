@@ -87,8 +87,7 @@ export function Project() {
               Personal Growth Engine
             </h2>
             <p style={{ fontSize: '14px', color: 'var(--fg-2)', lineHeight: 1.55 }}>
-              A live proof-of-concept for modern GTM architecture — built to showcase
-              exactly the skills companies hire for.
+              A live proof-of-concept for the GTM systems I build — running in production on this site.
             </p>
           </div>
           <a
@@ -316,14 +315,7 @@ export function Project() {
             What I built
           </div>
           <p style={{ fontSize: '15px', color: 'var(--fg-2)', lineHeight: 1.7, maxWidth: '680px' }}>
-            A fully automated B2C dropshipping operation targeting the German market.
-            Connected the Shopify storefront to AliExpress suppliers via DSers ERP for
-            hands-off fulfilment. Managed the full performance marketing mix —
-            Google Ads, Meta Ads, and Pinterest Ads — alongside organic SEO to drive
-            acquisition. Produced all ad creatives in Canva and handled customer
-            retention through Klaviyo email flows. Shut down in 2024 to refocus on
-            full-time career priorities — but it remains a strong proof point of
-            end-to-end commercial and digital marketing ownership.
+            Fully automated B2C dropshipping operation with Shopify connected to AliExpress via DSers ERP. Managed the entire performance marketing mix — Google Ads, Meta Ads, Pinterest Ads, and SEO — while handling creative and retention via Canva and Klaviyo. Shut down in 2024 to focus on full-time priorities, but stands as proof of end-to-end commercial and digital marketing ownership.
           </p>
         </div>
 

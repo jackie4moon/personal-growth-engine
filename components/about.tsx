@@ -55,11 +55,11 @@ export function About() {
               marginBottom: '16px',
             }}
           >
-            My work sits at the intersection of GTM architecture, marketing
-            technology, and AI automation. I design the systems that connect
-            marketing execution to measurable revenue outcomes — first-party
-            data pipelines, server-side tracking, AI-powered lead enrichment,
-            and attribution models that sales teams actually trust.
+            My work sits at the intersection of GTM architecture, performance
+            marketing, and AI automation. Not as separate disciplines, but as
+            one connected system: campaigns that generate demand, tracking
+            infrastructure that proves it, and automated pipelines that act on
+            it.
           </p>
           <p
             style={{
@@ -69,29 +69,28 @@ export function About() {
               marginBottom: '16px',
             }}
           >
-            What makes me different: I can manage a €50k/mo paid budget and
-            simultaneously architect the attribution model that proves its ROI.
-            I have designed full-funnel lead generation systems delivering 400+
-            MQLs at sub-€50 CPL, shipped server-side tracking infrastructure,
-            coordinated cross-functional teams across global web properties, and
-            built agentic workflows that run enrichment, scoring, and outreach
-            without manual intervention.
+            Over 8+ years I have managed €50k/month ad budgets, shipped
+            server-side tracking infrastructure, and rolled out analytics across
+            60+ international websites. At Instagrid I rebuilt cross-channel
+            attribution from scratch and reduced CAC by 18%. At SoftwareONE I
+            generated 400 MQLs at sub-€50 CPL across a full-funnel lead
+            generation campaign.
           </p>
           <p
             style={{
               color: 'var(--fg-2)',
               fontSize: '15px',
               lineHeight: 1.75,
+              marginBottom: '16px',
             }}
           >
-            I am looking for senior individual contributor or first-time
-            leadership roles as a GTM Architect, Growth Ops Manager, MarTech
-            Specialist, or AI Implementation Lead — ideally at B2B SaaS, deep
-            tech, or AI-native companies in scale-up phase where technical
-            marketing infrastructure is a competitive advantage, not a
-            nice-to-have. I bring the hands-on GTM execution and strategic
-            system-thinking to grow into a team leadership role.
+            What sets me apart is the combination. I can run a €50k/month paid
+            budget and simultaneously architect the attribution model that
+            proves its ROI. Increasingly, that also means knowing where AI
+            creates real leverage: from agentic lead enrichment to generative
+            tools that accelerate execution without losing strategic focus.
           </p>
+
         </div>
 
         {/* Right: metadata */}
