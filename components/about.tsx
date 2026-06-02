@@ -90,21 +90,7 @@ export function About() {
             creates real leverage: from agentic lead enrichment to generative
             tools that accelerate execution without losing strategic focus.
           </p>
-          <p
-            style={{
-              color: 'var(--fg-2)',
-              fontSize: '15px',
-              lineHeight: 1.75,
-            }}
-          >
-            I am looking for senior individual contributor or first-time
-            leadership roles as a GTM Architect, Growth Ops Manager, MarTech
-            Specialist, or AI Implementation Lead — ideally at B2B SaaS, deep
-            tech, or AI-native companies in scale-up phase where technical
-            marketing infrastructure is a competitive advantage, not a
-            nice-to-have. I bring the hands-on GTM execution and strategic
-            system-thinking to grow into a team leadership role.
-          </p>
+
         </div>
 
         {/* Right: metadata */}
