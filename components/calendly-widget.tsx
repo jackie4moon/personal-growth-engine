@@ -5,11 +5,11 @@ import { trackMeetingBooked, trackCtaClicked } from '@/lib/analytics'
 
 const CALENDLY_URL = process.env.NEXT_PUBLIC_CALENDLY_URL ?? ''
 
-// Brand color approximation for Calendly widget theming (matches --brand: oklch(68% 0.17 78))
+// pageSettings apply only on paid Calendly plans.
+// The wrapper in book-section.tsx applies invert(1) hue-rotate(180deg) at the
+// display layer so the widget looks dark regardless of plan.
+// These values are left as defaults so they don't fight the CSS filter.
 const PAGE_SETTINGS = {
-  backgroundColor: '0d0d0d',
-  primaryColor:    'c9960a',
-  textColor:       'f0f0f0',
   hideEventTypeDetails: false,
   hideLandingPageDetails: false,
 }

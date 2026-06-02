@@ -92,10 +92,22 @@ export function BookSection() {
         </p>
       </div>
 
-      {/* Calendly inline widget */}
+      {/* Calendly inline widget
+          filter: invert(1) hue-rotate(180deg) is the standard cross-origin iframe
+          dark-mode technique. The iframe can't be styled directly (CORS), but CSS
+          filters are applied at the browser's display layer and work regardless of
+          origin. invert(1) flips white→black, hue-rotate(180deg) rotates hue by 180°
+          so Calendly's blue accent colours remain visually blue rather than orange.
+          The pageSettings colours in calendly-widget.tsx act as a fallback for paid
+          Calendly plans that support custom embed colours. */}
       <div
         onClick={() => trackCtaClicked('Calendly widget interaction', 'book_section', process.env.NEXT_PUBLIC_CALENDLY_URL ?? '')}
-        style={{ borderRadius: '12px', overflow: 'hidden' }}
+        style={{
+          borderRadius: '12px',
+          overflow: 'hidden',
+          filter: 'invert(1) hue-rotate(180deg)',
+          border: '1px solid oklch(28% 0 0)',
+        }}
       >
         <CalendlyWidget />
       </div>
