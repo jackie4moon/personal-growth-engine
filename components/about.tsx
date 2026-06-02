@@ -69,13 +69,26 @@ export function About() {
               marginBottom: '16px',
             }}
           >
-            What makes me different: I can manage a €50k/mo paid budget and
-            simultaneously architect the attribution model that proves its ROI.
-            I have designed full-funnel lead generation systems delivering 400+
-            MQLs at sub-€50 CPL, shipped server-side tracking infrastructure,
-            coordinated cross-functional teams across global web properties, and
-            built agentic workflows that run enrichment, scoring, and outreach
-            without manual intervention.
+            Over 8+ years I have managed €50k/month ad budgets, shipped
+            server-side tracking infrastructure, and rolled out analytics across
+            60+ international websites. At Instagrid I rebuilt cross-channel
+            attribution from scratch and reduced CAC by 18%. At SoftwareONE I
+            generated 400 MQLs at sub-€50 CPL across a full-funnel lead
+            generation campaign.
+          </p>
+          <p
+            style={{
+              color: 'var(--fg-2)',
+              fontSize: '15px',
+              lineHeight: 1.75,
+              marginBottom: '16px',
+            }}
+          >
+            What sets me apart is the combination. I can run a €50k/month paid
+            budget and simultaneously architect the attribution model that
+            proves its ROI. Increasingly, that also means knowing where AI
+            creates real leverage: from agentic lead enrichment to generative
+            tools that accelerate execution without losing strategic focus.
           </p>
           <p
             style={{
