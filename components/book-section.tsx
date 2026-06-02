@@ -54,12 +54,12 @@ export function BookSection() {
         Book a call
       </div>
 
-      {/* Headline + subtext */}
+      {/* Headline + subtext — flex-start aligns both columns to the top */}
       <div
         style={{
           display: 'flex',
           justifyContent: 'space-between',
-          alignItems: 'flex-end',
+          alignItems: 'flex-start',
           gap: '40px',
           marginBottom: '48px',
           flexWrap: 'wrap',
@@ -73,29 +73,33 @@ export function BookSection() {
             letterSpacing: '-0.03em',
             color: 'var(--fg)',
             lineHeight: 1.2,
+            flex: '1 1 280px',
           }}
         >
           30 minutes. No pitch.<br />
           <span style={{ color: 'var(--brand)' }}>Just a real conversation.</span>
         </h2>
-        <p
+        <div
           style={{
             fontSize: '14px',
             color: 'var(--fg-2)',
             lineHeight: 1.65,
-            maxWidth: '360px',
-            flexShrink: 0,
+            maxWidth: '440px',
+            flex: '1 1 280px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '14px',
           }}
         >
-          If you&apos;re looking to fill a senior individual contributor or
-          first-time leadership role in Growth Operations, GTM Architecture,
-          Performance Marketing or Head of Growth, I&apos;d love to connect.
-          Not to sell myself, but to have an honest conversation about whether
-          what I do actually matches what you need.
-          <br />
-          <br />
-          Pick a slot below and let&apos;s find out.
-        </p>
+          <p>
+            If you&apos;re looking to fill a senior individual contributor or
+            first-time leadership role in Growth Operations, GTM Architecture,
+            Performance Marketing or Head of Growth, I&apos;d love to connect.
+            Not to sell myself, but to have an honest conversation about whether
+            what I do actually matches what you need.
+          </p>
+          <p>Pick a slot below and let&apos;s find out.</p>
+        </div>
       </div>
 
       {/* Calendly inline widget
