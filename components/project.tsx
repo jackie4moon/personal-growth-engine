@@ -87,8 +87,7 @@ export function Project() {
               Personal Growth Engine
             </h2>
             <p style={{ fontSize: '14px', color: 'var(--fg-2)', lineHeight: 1.55 }}>
-              A live proof-of-concept for modern GTM architecture — built to showcase
-              exactly the skills companies hire for.
+              A live proof-of-concept for the GTM systems I build — running in production on this site.
             </p>
           </div>
           <a
