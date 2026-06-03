@@ -102,30 +102,23 @@ export function BookSection() {
         </div>
       </div>
 
-      {/* Calendly inline widget
-          filter: invert(1) hue-rotate(180deg) is the standard cross-origin iframe
-          dark-mode technique. The iframe can't be styled directly (CORS), but CSS
-          filters are applied at the browser's display layer and work regardless of
-          origin. invert(1) flips white→black, hue-rotate(180deg) rotates hue by 180°
-          so Calendly's blue accent colours remain visually blue rather than orange.
-          The pageSettings colours in calendly-widget.tsx act as a fallback for paid
-          Calendly plans that support custom embed colours. */}
-      <div
-        onClick={() => trackCtaClicked('Calendly widget interaction', 'book_section', process.env.NEXT_PUBLIC_CALENDLY_URL ?? '')}
-        style={{
-          borderRadius: '12px',
-          overflow: 'hidden',
-          /* invert(1) flips white→near-black and dark-text→light-text.
-             Dropping hue-rotate means Calendly's blue accent inverts to
-             orange/amber — which aligns with the site's brand colour.
-             brightness(0.88) pulls the result from harsh pure-black to the
-             site's actual near-black bg (~#141414) and dims harsh light borders. */
-          filter: 'invert(1) brightness(0.88)',
-          border: '1px solid oklch(28% 0 0)',
-          background: '#fff', /* renders as near-black after invert */
-        }}
-      >
-        <CalendlyWidget />
+      {/* Calendly inline widget — two-div approach to avoid border inversion.
+          The outer div handles borderRadius + overflow clipping (not filtered).
+          The inner div carries the CSS filter so the border stays outside the
+          inversion and doesn't show as a white frame. */}
+      <div style={{ borderRadius: '12px', overflow: 'hidden' }}>
+        <div
+          onClick={() => trackCtaClicked('Calendly widget interaction', 'book_section', process.env.NEXT_PUBLIC_CALENDLY_URL ?? '')}
+          style={{
+            /* invert(1) flips white→near-black and dark-text→light-text.
+               Calendly's blue accent inverts to orange/amber — matches brand.
+               brightness(0.88) pulls bg from pure-black to site's ~#141414. */
+            filter: 'invert(1) brightness(0.88)',
+            background: '#fff', /* renders as near-black after invert */
+          }}
+        >
+          <CalendlyWidget />
+        </div>
       </div>
     </section>
   )
