@@ -94,7 +94,7 @@ export function BookSection() {
           <p>
             If you&apos;re looking to fill a senior individual contributor or
             first-time leadership role in Growth Operations, GTM Architecture,
-            Performance Marketing or Head of Growth, I&apos;d love to connect.
+            Performance Marketing, or an AI-focused marketing role, I&apos;d love to connect.
             Not to sell myself, but to have an honest conversation about whether
             what I do actually matches what you need.
           </p>
