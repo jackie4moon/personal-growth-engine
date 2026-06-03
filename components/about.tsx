@@ -3,7 +3,7 @@
 const sidebarItems = [
   { label: 'Location', value: 'Markkleeberg, Germany' },
   { label: 'Availability', value: 'August 2026 · Remote-first · International' },
-  { label: 'Target roles', value: 'Head of Growth · Head of Performance Marketing · Growth Ops Manager · GTM Architect · MarTech Specialist · AI Implementation Lead' },
+  { label: 'Target roles', value: 'Head of Growth · Head of Performance Marketing · Growth Ops Manager · GTM Architect · MarTech Specialist · Marketing AI Lead' },
   { label: 'Languages', value: 'German (native) · English (C1)' },
   { label: 'Visa / work permit', value: 'EU citizen' },
   { label: 'Currently', value: 'Advanced cert: AI & Automation in Digital Marketing' },
@@ -84,11 +84,13 @@ export function About() {
               marginBottom: '16px',
             }}
           >
-            What sets me apart is the combination. I can run a €50k/month paid
-            budget and simultaneously architect the attribution model that
-            proves its ROI. Increasingly, that also means knowing where AI
-            creates real leverage: from agentic lead enrichment to generative
-            tools that accelerate execution without losing strategic focus.
+            What sets me apart is the ability to connect the dots. I design the
+            systems that bring marketing execution, lead management and data
+            together into coherent, automated processes — so teams spend less
+            time reconciling tools and more time acting on good information.
+            Increasingly that means knowing where AI creates real leverage: from
+            agentic enrichment pipelines to automated workflows that remove
+            manual steps without losing strategic control.
           </p>
 
         </div>

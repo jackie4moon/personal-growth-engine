@@ -54,7 +54,7 @@ export function Hero() {
                 display: 'inline-block',
               }}
             />
-            Open to Head of Growth · GTM Architect · AI Implementation Lead roles
+            Open to Head of Growth · GTM Architect · Marketing AI Lead roles
           </div>
 
           {/* Title */}
@@ -84,9 +84,9 @@ export function Hero() {
               marginBottom: '40px',
             }}
           >
-            GTM Architect with 8+ years in performance marketing, data infrastructure,
-            and AI-powered growth ops — building the accountability layer between
-            marketing execution and revenue.
+            GTM Architect with 8+ years in performance marketing, data infrastructure
+            and AI-powered automation — building the systems that connect marketing
+            execution to efficient lead management and measurable pipeline.
           </p>
 
           {/* CTAs */}
