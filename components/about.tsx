@@ -84,11 +84,13 @@ export function About() {
               marginBottom: '16px',
             }}
           >
-            What sets me apart is the combination. I can run a €50k/month paid
-            budget and simultaneously architect the attribution model that
-            proves its ROI. Increasingly, that also means knowing where AI
-            creates real leverage: from agentic lead enrichment to generative
-            tools that accelerate execution without losing strategic focus.
+            What sets me apart is the ability to connect the dots. I design the
+            systems that bring marketing execution, lead management and data
+            together into coherent, automated processes — so teams spend less
+            time reconciling tools and more time acting on good information.
+            Increasingly that means knowing where AI creates real leverage: from
+            agentic enrichment pipelines to automated workflows that remove
+            manual steps without losing strategic control.
           </p>
 
         </div>
