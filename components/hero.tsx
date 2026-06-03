@@ -54,7 +54,7 @@ export function Hero() {
                 display: 'inline-block',
               }}
             />
-            Open to Head of Growth · GTM Architect · AI Implementation Lead roles
+            Open to Head of Growth · GTM Architect · Marketing AI Lead roles
           </div>
 
           {/* Title */}
